@@ -906,6 +906,30 @@
             color: #262626;
         }
 
+        .follow-btn-large {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .follow-btn-large:hover {
+            background: #5568d3;
+        }
+
+        .follow-btn-large.following {
+            background: #efefef;
+            color: #262626;
+        }
+
+        .follow-btn-large.following:hover {
+            background: #dbdbdb;
+        }
+
         .back-btn {
             background: #efefef;
             color: #262626;
@@ -1065,6 +1089,7 @@
                     <div class="profile-header-info">
                         <div class="profile-header-top">
                             <h2 class="profile-username" id="profilePageName"></h2>
+                            <button class="follow-btn-large" id="followBtn" style="display: none;" onclick="toggleFollow()">Follow</button>
                             <button class="back-btn" onclick="showFeed()">← Back to Feed</button>
                         </div>
                         <div class="profile-stats-large">
@@ -1072,12 +1097,12 @@
                                 <span class="stat-number" id="profilePagePostsCount">0</span>
                                 <span class="stat-label">posts</span>
                             </div>
-                            <div class="stat">
-                                <span class="stat-number">0</span>
+                            <div class="stat clickable-user" onclick="showFollowers()">
+                                <span class="stat-number" id="profilePageFollowersCount">0</span>
                                 <span class="stat-label">followers</span>
                             </div>
-                            <div class="stat">
-                                <span class="stat-number">0</span>
+                            <div class="stat clickable-user" onclick="showFollowing()">
+                                <span class="stat-number" id="profilePageFollowingCount">0</span>
                                 <span class="stat-label">following</span>
                             </div>
                         </div>
@@ -1124,12 +1149,12 @@
                             <span class="stat-number" id="postsCount">0</span>
                             <span class="stat-label">Posts</span>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">0</span>
+                        <div class="stat clickable-user" onclick="showFollowers()">
+                            <span class="stat-number" id="followersCount">0</span>
                             <span class="stat-label">Followers</span>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">0</span>
+                        <div class="stat clickable-user" onclick="showFollowing()">
+                            <span class="stat-number" id="followingCount">0</span>
                             <span class="stat-label">Following</span>
                         </div>
                     </div>
@@ -1182,7 +1207,7 @@
             const phoneId = '+1' + Math.floor(Math.random() * 9000000000 + 1000000000);
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, 'users', userCredential.user.uid), { displayName: name, phoneId: phoneId, email: email, createdAt: serverTimestamp(), postsCount: 0 });
+                await setDoc(doc(db, 'users', userCredential.user.uid), { displayName: name, phoneId: phoneId, email: email, createdAt: serverTimestamp(), postsCount: 0, followersCount: 0, followingCount: 0 });
                 alert('Account created!\\n\\nPhone ID: ' + phoneId);
             } catch (error) { alert(error.code === 'auth/email-already-in-use' ? 'Email already registered.' : 'Signup failed: ' + error.message); }
         };
@@ -1253,7 +1278,6 @@
                                 <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${post.userInitial || 'U'}</div>
                                 <div><div class="post-user-name clickable-user" onclick="showProfile('${post.userId}')">${post.userName || 'User'}</div><div class="post-time">${timeAgo}</div></div>
                             </div>
-                            ${isOwner ? `<button class="post-menu-btn" onclick="deletePost('${postDoc.id}')">🗑️</button>` : ''}
                         </div>
                         ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
                         <div class="post-content">${post.text ? `<div class="post-text">${escapeHtml(post.text)}</div>` : ''}</div>
@@ -1426,7 +1450,6 @@
                 });
                 
                 comments.forEach(({ id, data: comment }) => {
-                    const isOwner = comment.userId === auth.currentUser.uid;
                     const timeAgo = comment.createdAt ? getTimeAgo(comment.createdAt.toDate()) : (comment.timestamp ? getTimeAgo(new Date(comment.timestamp)) : 'Just now');
                     
                     const commentElement = document.createElement('div');
@@ -1439,7 +1462,6 @@
                                 <span class="comment-time">${timeAgo}</span>
                             </div>
                             <div class="comment-text">${escapeHtml(comment.text)}</div>
-                            ${isOwner ? `<button class="comment-delete-btn" onclick="deleteComment('${id}')">Delete</button>` : ''}
                         </div>
                     `;
                     container.appendChild(commentElement);
@@ -1470,7 +1492,7 @@
                 snapshot.forEach((notifDoc) => {
                     const notif = notifDoc.data();
                     const timeAgo = notif.createdAt ? getTimeAgo(notif.createdAt.toDate()) : 'Just now';
-                    const notifText = notif.type === 'like' ? `<strong>${notif.fromUserName}</strong> liked your post` : `<strong>${notif.fromUserName}</strong> commented on your post`;
+                    const notifText = notif.type === 'like' ? `<strong>${notif.fromUserName}</strong> liked your post` : notif.type === 'comment' ? `<strong>${notif.fromUserName}</strong> commented on your post` : `<strong>${notif.fromUserName}</strong> started following you`;
                     const notifElement = document.createElement('div');
                     notifElement.className = `notification-item ${!notif.read ? 'unread' : ''}`;
                     notifElement.onclick = () => { if (notif.postId) { showFeed(); window.scrollTo({ top: 0, behavior: 'smooth' }); toggleNotifications(); } };
@@ -1500,10 +1522,96 @@
                 document.getElementById('profilePageName').textContent = userData.displayName;
                 document.getElementById('profilePagePhone').textContent = userData.phoneId || '';
                 document.getElementById('profilePagePostsCount').textContent = userData.postsCount || 0;
+                document.getElementById('profilePageFollowersCount').textContent = userData.followersCount || 0;
+                document.getElementById('profilePageFollowingCount').textContent = userData.followingCount || 0;
+                
+                const followBtn = document.getElementById('followBtn');
+                if (userId === auth.currentUser.uid) {
+                    followBtn.style.display = 'none';
+                } else {
+                    followBtn.style.display = 'block';
+                    const isFollowing = await checkIfFollowing(userId);
+                    if (isFollowing) {
+                        followBtn.textContent = 'Following';
+                        followBtn.classList.add('following');
+                    } else {
+                        followBtn.textContent = 'Follow';
+                        followBtn.classList.remove('following');
+                    }
+                }
+                
                 document.querySelector('.content').style.display = 'none';
                 document.getElementById('profilePage').classList.add('active');
                 loadProfilePosts(userId);
             } catch (error) { console.error(error); alert('Failed to load profile'); }
+        };
+
+        async function checkIfFollowing(userId) {
+            try {
+                const followDoc = await getDoc(doc(db, 'follows', `${auth.currentUser.uid}_${userId}`));
+                return followDoc.exists();
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        }
+
+        window.toggleFollow = async () => {
+            if (!currentViewingUserId) return;
+            const followBtn = document.getElementById('followBtn');
+            const followId = `${auth.currentUser.uid}_${currentViewingUserId}`;
+            
+            try {
+                followBtn.disabled = true;
+                const followDoc = await getDoc(doc(db, 'follows', followId));
+                
+                if (followDoc.exists()) {
+                    await deleteDoc(doc(db, 'follows', followId));
+                    await updateDoc(doc(db, 'users', currentViewingUserId), { followersCount: increment(-1) });
+                    await updateDoc(doc(db, 'users', auth.currentUser.uid), { followingCount: increment(-1) });
+                    followBtn.textContent = 'Follow';
+                    followBtn.classList.remove('following');
+                    const count = parseInt(document.getElementById('profilePageFollowersCount').textContent) - 1;
+                    document.getElementById('profilePageFollowersCount').textContent = Math.max(0, count);
+                } else {
+                    await setDoc(doc(db, 'follows', followId), {
+                        followerId: auth.currentUser.uid,
+                        followingId: currentViewingUserId,
+                        createdAt: serverTimestamp()
+                    });
+                    await updateDoc(doc(db, 'users', currentViewingUserId), { followersCount: increment(1) });
+                    await updateDoc(doc(db, 'users', auth.currentUser.uid), { followingCount: increment(1) });
+                    
+                    await addDoc(collection(db, 'notifications'), {
+                        userId: currentViewingUserId,
+                        fromUserId: auth.currentUser.uid,
+                        fromUserName: currentUserData.displayName,
+                        fromUserInitial: currentUserData.displayName.charAt(0).toUpperCase(),
+                        type: 'follow',
+                        read: false,
+                        createdAt: serverTimestamp(),
+                        timestamp: Date.now()
+                    });
+                    
+                    followBtn.textContent = 'Following';
+                    followBtn.classList.add('following');
+                    const count = parseInt(document.getElementById('profilePageFollowersCount').textContent) + 1;
+                    document.getElementById('profilePageFollowersCount').textContent = count;
+                }
+                followBtn.disabled = false;
+            } catch (error) {
+                console.error(error);
+                alert('Failed to update follow status');
+                followBtn.disabled = false;
+            }
+        };
+
+        window.showFollowers = () => {
+            alert('Followers list coming soon!');
+        };
+
+        window.showFollowing = () => {
+            alert('Following list coming soon!');
         };
 
         window.showMyProfile = () => { showProfile(auth.currentUser.uid); };
@@ -1532,7 +1640,6 @@
                                 <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${post.userInitial || 'U'}</div>
                                 <div><div class="post-user-name clickable-user" onclick="showProfile('${post.userId}')">${post.userName || 'User'}</div><div class="post-time">${timeAgo}</div></div>
                             </div>
-                            ${isOwner ? `<button class="post-menu-btn" onclick="deletePost('${postDoc.id}')">🗑️</button>` : ''}
                         </div>
                         ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
                         <div class="post-content">${post.text ? `<div class="post-text">${escapeHtml(post.text)}</div>` : ''}</div>
@@ -1572,7 +1679,7 @@
             if (user) {
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 if (!userDoc.exists()) {
-                    await setDoc(doc(db, 'users', user.uid), { displayName: user.displayName || user.email.split('@')[0], email: user.email, phoneId: '+1' + Math.floor(Math.random() * 9000000000 + 1000000000), createdAt: serverTimestamp(), postsCount: 0 });
+                    await setDoc(doc(db, 'users', user.uid), { displayName: user.displayName || user.email.split('@')[0], email: user.email, phoneId: '+1' + Math.floor(Math.random() * 9000000000 + 1000000000), createdAt: serverTimestamp(), postsCount: 0, followersCount: 0, followingCount: 0 });
                 }
                 const userData = userDoc.exists() ? userDoc.data() : { displayName: user.email.split('@')[0], phoneId: '', postsCount: 0 };
                 currentUserData = userData;
@@ -1583,11 +1690,20 @@
                 document.getElementById('profileName').textContent = userData.displayName;
                 document.getElementById('profilePhone').textContent = userData.phoneId || '';
                 document.getElementById('postsCount').textContent = userData.postsCount || 0;
+                document.getElementById('followersCount').textContent = userData.followersCount || 0;
+                document.getElementById('followingCount').textContent = userData.followingCount || 0;
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainContainer').classList.add('active');
                 loadPosts();
                 loadNotifications();
-                onSnapshot(doc(db, 'users', user.uid), (docSnap) => { if (docSnap.exists()) document.getElementById('postsCount').textContent = docSnap.data().postsCount || 0; });
+                onSnapshot(doc(db, 'users', user.uid), (docSnap) => { 
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        document.getElementById('postsCount').textContent = data.postsCount || 0;
+                        document.getElementById('followersCount').textContent = data.followersCount || 0;
+                        document.getElementById('followingCount').textContent = data.followingCount || 0;
+                    }
+                });
                 document.addEventListener('click', (e) => {
                     const panel = document.getElementById('notificationsPanel');
                     const notifBtn = e.target.closest('.icon-btn-wrapper');
