@@ -139,16 +139,49 @@
         .btn-perm-ban { background: #ed4956; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .btn-del-reported { background: #9b59b6; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .resolved-badge { background: #2ecc71; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
-
-        /* Temp ban duration picker */
         .tempban-duration-select { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; padding: 7px 10px; font-size: 12px; cursor: pointer; }
         .tempban-duration-select option { background: #1a1a2e; color: white; }
         .tempbanned-badge { background: #e67e22; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
-
-        /* Reports badge on admin icon */
         .reports-badge { position: absolute; top: -4px; right: -4px; background: #fc4a1a; color: white; border-radius: 10px; padding: 2px 5px; font-size: 10px; font-weight: 700; min-width: 16px; text-align: center; display: none; }
 
-        /* ── REST OF ORIGINAL STYLES ── */
+        /* ── FEED TABS ── */
+        .feed-tabs { display: flex; background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 6px; margin-bottom: 20px; gap: 4px; }
+        .feed-tab-btn { flex: 1; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; color: #8e8e8e; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .feed-tab-btn:hover { background: #f5f5f5; color: #262626; }
+        .feed-tab-btn.active { background: #667eea; color: white; box-shadow: 0 2px 8px rgba(102,126,234,0.4); }
+
+        /* ── HASHTAG FEED HEADER ── */
+        .hashtag-feed-header { display: none; background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; align-items: center; gap: 12px; }
+        .hashtag-feed-header.active { display: flex; }
+        .hashtag-feed-back { background: #efefef; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; color: #262626; white-space: nowrap; }
+        .hashtag-feed-back:hover { background: #dbdbdb; }
+        .hashtag-feed-title { font-size: 20px; font-weight: 700; color: #262626; }
+        .hashtag-feed-subtitle { font-size: 13px; color: #8e8e8e; margin-left: auto; }
+
+        /* ── HASHTAG CHIPS IN POSTS ── */
+        .hashtag { color: #667eea; font-weight: 600; cursor: pointer; transition: color 0.15s; text-decoration: none; }
+        .hashtag:hover { color: #4a55c0; text-decoration: underline; }
+
+        /* ── HASHTAG PREVIEW WHILE TYPING ── */
+        .hashtag-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #efefef; }
+        .hashtag-chip { background: #f0f4ff; color: #667eea; border: 1px solid #c5ceff; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+
+        /* ── TRENDING HASHTAGS SIDEBAR ── */
+        .trending-section { background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+        .trending-section h4 { font-size: 14px; font-weight: 700; color: #262626; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+        .trending-tag { display: flex; align-items: center; justify-content: space-between; padding: 9px 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; }
+        .trending-tag:hover { background: #f5f7ff; }
+        .trending-tag:last-child { margin-bottom: 0; }
+        .trending-tag-left { display: flex; align-items: center; gap: 10px; }
+        .trending-tag-rank { font-size: 12px; font-weight: 700; color: #b2b2b2; width: 16px; text-align: center; }
+        .trending-tag-rank.top { color: #f7b733; }
+        .trending-tag-name { font-size: 14px; font-weight: 600; color: #667eea; }
+        .trending-tag-count { font-size: 12px; color: #8e8e8e; background: #f5f5f5; padding: 2px 8px; border-radius: 10px; }
+        .trending-empty { font-size: 12px; color: #8e8e8e; text-align: center; padding: 12px 0; }
+        .trending-refresh { background: none; border: none; cursor: pointer; font-size: 12px; color: #8e8e8e; padding: 2px 6px; border-radius: 4px; }
+        .trending-refresh:hover { background: #f5f5f5; color: #262626; }
+
+        /* ── NOTIFICATIONS ── */
         .notifications-panel { position: fixed; top: 60px; right: 20px; width: 400px; max-width: calc(100vw - 40px); max-height: 500px; background: white; border: 1px solid #dbdbdb; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1000; }
         .notifications-panel.active { display: flex; }
         .notifications-header { padding: 16px; border-bottom: 1px solid #efefef; display: flex; justify-content: space-between; align-items: center; }
@@ -224,10 +257,24 @@
         .post-action.liked { color: #ed4956; }
         .post-action-count { font-size: 14px; font-weight: 600; }
         .post-text { font-size: 14px; line-height: 1.5; color: #262626; }
-
-        /* Admin delete button on posts */
         .admin-delete-post-btn { background: #ed4956; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .admin-delete-post-btn:hover { background: #c92a39; }
+
+        /* ── EDIT POST ── */
+        .edit-post-btn { background: none; border: none; color: #8e8e8e; cursor: pointer; font-size: 12px; padding: 6px 10px; border-radius: 6px; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
+        .edit-post-btn:hover { background: #f0f4ff; color: #667eea; }
+        .post-edit-area { display: none; padding: 0 16px 16px; border-top: 1px solid #efefef; margin-top: 4px; }
+        .post-edit-area.active { display: block; }
+        .post-edit-textarea { width: 100%; border: 1.5px solid #667eea; border-radius: 10px; padding: 12px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px; outline: none; line-height: 1.5; margin-top: 12px; }
+        .post-edit-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 8px; flex-wrap: wrap; }
+        .post-edit-preview { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+        .post-edit-btns { display: flex; gap: 8px; }
+        .edit-save-btn { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .edit-save-btn:hover { background: #5568d3; }
+        .edit-save-btn:disabled { background: #b2b2b2; cursor: not-allowed; }
+        .edit-cancel-btn { background: #efefef; color: #262626; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .edit-cancel-btn:hover { background: #dbdbdb; }
+        .post-edited-tag { font-size: 11px; color: #b2b2b2; margin-left: 6px; font-style: italic; }
 
         /* ── PRIVACY TOGGLE ── */
         .privacy-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 20px; border: 1px solid #dbdbdb; background: #fafafa; font-size: 13px; font-weight: 600; color: #262626; transition: all 0.2s; user-select: none; }
@@ -284,8 +331,6 @@
         .profile-posts-header span { font-size: 14px; font-weight: 600; color: #262626; display: flex; align-items: center; gap: 6px; }
         .clickable-user { cursor: pointer; }
         .clickable-user:hover { opacity: 0.7; }
-
-        /* Admin profile actions */
         .admin-profile-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
         .admin-profile-ban-btn { background: #ed4956; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
         .admin-profile-nuke-btn { background: #e67e22; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
@@ -409,7 +454,6 @@
                 <div class="admin-tab" onclick="switchAdminTab('log', event)">📋 Log</div>
             </div>
             <div class="admin-body">
-                <!-- Overview -->
                 <div class="admin-section active" id="adminSectionOverview">
                     <div class="admin-stat-grid">
                         <div class="admin-stat-card"><div class="admin-stat-num" id="adminStatUsers">—</div><div class="admin-stat-label">Total Users</div></div>
@@ -418,17 +462,14 @@
                     </div>
                     <p style="color:rgba(255,255,255,0.4); font-size:13px; text-align:center; margin-top:8px;">You have full administrative control over HT Social.</p>
                 </div>
-                <!-- Users -->
                 <div class="admin-section" id="adminSectionUsers">
                     <input type="text" class="admin-search-input" placeholder="🔍  Search users..." oninput="filterAdminUsers(this.value)">
                     <div class="admin-user-list" id="adminUserList"><div class="admin-empty">Loading users...</div></div>
                 </div>
-                <!-- Posts -->
                 <div class="admin-section" id="adminSectionPosts">
                     <input type="text" class="admin-search-input" placeholder="🔍  Search posts..." oninput="filterAdminPosts(this.value)">
                     <div class="admin-post-list" id="adminPostList"><div class="admin-empty">Loading posts...</div></div>
                 </div>
-                <!-- Announce -->
                 <div class="admin-section" id="adminSectionAnnounce">
                     <p style="color:rgba(255,255,255,0.5); font-size:13px; margin-bottom:16px;">Post a site-wide announcement banner visible to all users.</p>
                     <textarea class="admin-announce-textarea" id="announceText" placeholder="Write your announcement..."></textarea>
@@ -437,7 +478,6 @@
                         <button class="btn-announce" style="background:#444;" onclick="clearAnnouncement()">🗑 Clear</button>
                     </div>
                 </div>
-                <!-- Reports -->
                 <div class="admin-section" id="adminSectionReports">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
                         <p style="color:rgba(255,255,255,0.5);font-size:13px;">User-submitted content reports requiring review.</p>
@@ -445,7 +485,6 @@
                     </div>
                     <div id="adminReportList"><div class="admin-empty">Loading reports...</div></div>
                 </div>
-                <!-- Log -->
                 <div class="admin-section" id="adminSectionLog">
                     <div id="adminLogList"><div class="admin-empty">No actions logged yet this session.</div></div>
                 </div>
@@ -471,7 +510,6 @@
                         <div class="stat clickable-user" onclick="showFollowing()"><span class="stat-number" id="profilePageFollowingCount">0</span><span class="stat-label">following</span></div>
                     </div>
                     <div class="profile-bio" id="profilePagePhone"></div>
-                    <!-- Admin actions shown only to admin on other profiles -->
                     <div class="admin-profile-actions" id="adminProfileActions" style="display:none;">
                         <button class="admin-profile-ban-btn" id="adminProfileBanBtn" onclick="adminToggleBanFromProfile()">🚫 Ban User</button>
                         <button class="admin-profile-nuke-btn" onclick="adminDeleteAllPostsFromProfile()">💣 Delete All Posts</button>
@@ -488,8 +526,10 @@
             <div class="create-post">
                 <div class="create-post-header">
                     <div class="user-avatar" id="postAvatar"></div>
-                    <textarea class="create-post-input" id="postInput" placeholder="What's on your mind?" rows="1" oninput="autoResize(this)"></textarea>
+                    <textarea class="create-post-input" id="postInput" placeholder="What's on your mind? Use #hashtags to categorize your post!" rows="1" oninput="autoResize(this); updateHashtagPreview(this.value);"></textarea>
                 </div>
+                <!-- Hashtag preview while typing -->
+                <div id="hashtagPreviewContainer"></div>
                 <div id="imagePreviewContainer"></div>
                 <div class="create-post-actions">
                     <div class="post-action-btns">
@@ -500,6 +540,22 @@
                     <button class="post-btn" id="postButton" onclick="createPost()" disabled>Post</button>
                 </div>
             </div>
+
+            <!-- ── FEED TABS ── -->
+            <div class="feed-tabs" id="feedTabs">
+                <button class="feed-tab-btn active" id="tabForYou" onclick="switchFeedTab('forYou')">✨ For You</button>
+                <button class="feed-tab-btn" id="tabFollowing" onclick="switchFeedTab('following')">👥 Following</button>
+            </div>
+
+            <!-- ── HASHTAG FEED HEADER (shown when browsing a hashtag) ── -->
+            <div class="hashtag-feed-header" id="hashtagFeedHeader">
+                <button class="hashtag-feed-back" onclick="switchFeedTab('forYou')">← Back</button>
+                <div>
+                    <div class="hashtag-feed-title" id="hashtagFeedTitle">#hashtag</div>
+                </div>
+                <span class="hashtag-feed-subtitle" id="hashtagFeedSubtitle"></span>
+            </div>
+
             <div id="postsContainer"></div>
         </div>
 
@@ -521,6 +577,16 @@
                 <button class="logout-btn" onclick="logout()">Sign Out</button>
                 <button class="admin-panel-btn" id="sidebarAdminBtn" onclick="openAdminPanel()" style="display:none;">👑 Admin Panel</button>
             </div>
+
+            <!-- ── TRENDING HASHTAGS ── -->
+            <div class="trending-section" id="trendingSection">
+                <h4>
+                    🔥 Trending
+                    <button class="trending-refresh" onclick="loadTrendingHashtags()" title="Refresh">↻</button>
+                </h4>
+                <div id="trendingHashtags"><p class="trending-empty">Loading trends...</p></div>
+            </div>
+
             <div class="suggestions">
                 <h4>Suggested for you</h4>
                 <p style="font-size: 12px; color: #8e8e8e; margin-top: 16px;">© 2026 HT Social</p>
@@ -559,7 +625,12 @@
     let adminLog = [];
     let isPrivatePost = false;
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // ── Feed state ────────────────────────────────────────────────────────────
+    let currentFeedMode = 'forYou'; // 'forYou' | 'following' | 'hashtag'
+    let currentHashtag = null;
+    let unsubscribeFeed = null; // cleanup for active listener
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     function getTimeAgo(date) {
         const s = Math.floor((new Date() - date) / 1000);
@@ -577,6 +648,33 @@
         return d.innerHTML.replace(/\n/g, '<br>');
     }
 
+    // Render post text with clickable hashtags (multi-word support)
+    function renderPostText(text) {
+        // Split on # — everything after each # until the next # is a tag
+        const parts = text.split('#');
+        if (parts.length === 1) return escapeHtml(text); // no hashtags
+        let result = escapeHtml(parts[0]);
+        for (let i = 1; i < parts.length; i++) {
+            const tagText = parts[i];
+            if (tagText.trim().length === 0) { result += '#'; continue; }
+            const tag = tagText.trim().replace(/\s+/g, ' ').toLowerCase();
+            result += `<span class="hashtag" onclick="window.showHashtagFeed('${tag.replace(/'/g, "\\'")}')">#${escapeHtml(tagText)}</span>`;
+        }
+        return result;
+    }
+
+    // Extract hashtags — everything from # to the next # (or end of text) is one tag
+    // e.g. "#Dripping Beats #Records" => ["dripping beats", "records"]
+    function extractHashtags(text) {
+        const parts = text.split('#').slice(1); // split on # and drop everything before first #
+        return [...new Set(
+            parts
+                .map(p => p.trim().replace(/\s+/g, ' ')) // normalize whitespace
+                .filter(p => p.length > 0)
+                .map(p => p.toLowerCase())
+        )];
+    }
+
     function addAdminLog(msg) {
         adminLog.unshift({ msg, time: new Date() });
         const list = document.getElementById('adminLogList');
@@ -587,7 +685,7 @@
         }
     }
 
-    // ── Auth ─────────────────────────────────────────────────────────────────
+    // ── Auth ──────────────────────────────────────────────────────────────────
 
     window.login = async () => {
         const email = document.getElementById('loginEmail').value.trim();
@@ -611,19 +709,26 @@
     };
 
     window.logout = () => {
-        if (confirm('Sign out?')) {
-            // hide before the next auth event just in case
-            isAdmin = false;
-            hideAdminUI();
-            signOut(auth);
-        }
+        if (confirm('Sign out?')) { isAdmin = false; hideAdminUI(); signOut(auth); }
     };
     window.showSignup = () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('signupForm').style.display = 'block'; };
     window.showLogin = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('signupForm').style.display = 'none'; };
 
     // ── Post creation ─────────────────────────────────────────────────────────
 
-    window.autoResize = (el) => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; document.getElementById('postButton').disabled = !(el.value.trim() || selectedImage); };
+    window.autoResize = (el) => {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+        document.getElementById('postButton').disabled = !(el.value.trim() || selectedImage);
+    };
+
+    // Live hashtag preview while typing
+    window.updateHashtagPreview = (text) => {
+        const tags = extractHashtags(text);
+        const container = document.getElementById('hashtagPreviewContainer');
+        if (tags.length === 0) { container.innerHTML = ''; return; }
+        container.innerHTML = `<div class="hashtag-preview">${tags.map(t => `<span class="hashtag-chip">#️⃣ #${t}</span>`).join('')}</div>`;
+    };
 
     window.handleImageSelect = (event) => {
         const file = event.target.files[0];
@@ -647,18 +752,18 @@
         reader.readAsDataURL(file);
     };
 
-    window.removeImage = () => { selectedImage = null; document.getElementById('imagePreviewContainer').innerHTML = ''; document.getElementById('imageInput').value = ''; document.getElementById('postButton').disabled = !document.getElementById('postInput').value.trim(); };
+    window.removeImage = () => {
+        selectedImage = null;
+        document.getElementById('imagePreviewContainer').innerHTML = '';
+        document.getElementById('imageInput').value = '';
+        document.getElementById('postButton').disabled = !document.getElementById('postInput').value.trim();
+    };
 
     window.togglePrivacy = () => {
         isPrivatePost = !isPrivatePost;
         const btn = document.getElementById('privacyToggle');
-        if (isPrivatePost) {
-            btn.textContent = '🔒 Only Me';
-            btn.classList.add('private');
-        } else {
-            btn.textContent = '🌐 Public';
-            btn.classList.remove('private');
-        }
+        if (isPrivatePost) { btn.textContent = '🔒 Only Me'; btn.classList.add('private'); }
+        else { btn.textContent = '🌐 Public'; btn.classList.remove('private'); }
     };
 
     window.createPost = async () => {
@@ -667,18 +772,41 @@
         try {
             document.getElementById('postButton').disabled = true;
             document.getElementById('postButton').textContent = 'Posting...';
-            await addDoc(collection(db, 'posts'), { text, image: selectedImage || null, userId: auth.currentUser.uid, userName: currentUserData.displayName, userInitial: currentUserData.displayName.charAt(0).toUpperCase(), likes: [], likesCount: 0, commentsCount: 0, isPrivate: isPrivatePost, createdAt: serverTimestamp() });
+
+            // Extract hashtags from text
+            const hashtags = extractHashtags(text);
+
+            await addDoc(collection(db, 'posts'), {
+                text,
+                image: selectedImage || null,
+                userId: auth.currentUser.uid,
+                userName: currentUserData.displayName,
+                userInitial: currentUserData.displayName.charAt(0).toUpperCase(),
+                likes: [],
+                likesCount: 0,
+                commentsCount: 0,
+                isPrivate: isPrivatePost,
+                hashtags,          // ← stored array of tags
+                createdAt: serverTimestamp()
+            });
             await updateDoc(doc(db, 'users', auth.currentUser.uid), { postsCount: increment(1) });
+
             document.getElementById('postInput').value = '';
             document.getElementById('postInput').style.height = 'auto';
+            document.getElementById('hashtagPreviewContainer').innerHTML = '';
             removeImage();
-            // Reset privacy to public after posting
             isPrivatePost = false;
             const btn = document.getElementById('privacyToggle');
-            btn.textContent = '🌐 Public';
-            btn.classList.remove('private');
+            btn.textContent = '🌐 Public'; btn.classList.remove('private');
             document.getElementById('postButton').textContent = 'Post';
-        } catch (e) { alert('Failed: ' + e.message); document.getElementById('postButton').disabled = false; document.getElementById('postButton').textContent = 'Post'; }
+
+            // Refresh trending after new post
+            loadTrendingHashtags();
+        } catch (e) {
+            alert('Failed: ' + e.message);
+            document.getElementById('postButton').disabled = false;
+            document.getElementById('postButton').textContent = 'Post';
+        }
     };
 
     // ── Feed ──────────────────────────────────────────────────────────────────
@@ -687,6 +815,7 @@
         const post = postDoc.data();
         const isLiked = post.likes && post.likes.includes(auth.currentUser.uid);
         const timeAgo = post.createdAt ? getTimeAgo(post.createdAt.toDate()) : 'Just now';
+        const editedTag = post.editedAt ? `<span class="post-edited-tag">(edited)</span>` : '';
         const adminDeleteBtn = isAdmin ? `<button class="admin-delete-post-btn" onclick="adminDeletePost('${postDoc.id}', '${post.userId}')">🗑 Delete</button>` : '';
         const isOwnPost = post.userId === auth.currentUser.uid;
         const reportBtn = !isOwnPost ? `<button class="report-post-btn" onclick="openReportModal('${postDoc.id}', '${post.userId}', \`${escapeHtml(post.text || '').replace(/`/g,'')}\`)" title="Report post">🚩</button>` : '';
@@ -696,19 +825,41 @@
         const privacyToggleBtn = isOwnPost
             ? `<button class="report-post-btn" onclick="togglePostPrivacy('${postDoc.id}', ${!!post.isPrivate})" title="${post.isPrivate ? 'Make public' : 'Make private'}" style="color:${post.isPrivate ? '#667eea' : '#8e8e8e'}">${post.isPrivate ? '🔒' : '🌐'}</button>`
             : '';
+        const editBtn = isOwnPost
+            ? `<button class="edit-post-btn" onclick="toggleEditArea('${postDoc.id}')" title="Edit post">✏️ Edit</button>`
+            : '';
+
+        // Render post text with clickable hashtags
+        const postTextHtml = post.text ? `<div class="post-text">${renderPostText(post.text)}</div>` : '';
+
+        // Safe escaped text for edit textarea
+        const safeText = (post.text || '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#10;/g,'\n').replace(/`/g,'\`').replace(/\\/g,'\\');
+
         return `
             <div class="post-header">
                 <div class="post-user-info">
                     <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${post.userInitial || 'U'}</div>
                     <div>
                         <div class="post-user-name clickable-user" onclick="showProfile('${post.userId}')">${post.userName || 'User'}</div>
-                        <div class="post-time">${timeAgo} ${isOwnPost ? privacyBadge : ''}</div>
+                        <div class="post-time">${timeAgo}${editedTag} ${isOwnPost ? privacyBadge : ''}</div>
                     </div>
                 </div>
-                <div style="display:flex;gap:8px;align-items:center;">${privacyToggleBtn}${reportBtn}${adminDeleteBtn}</div>
+                <div style="display:flex;gap:8px;align-items:center;">${editBtn}${privacyToggleBtn}${reportBtn}${adminDeleteBtn}</div>
             </div>
             ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
-            <div class="post-content">${post.text ? `<div class="post-text">${escapeHtml(post.text)}</div>` : ''}</div>
+            <div class="post-content" id="postContent_${postDoc.id}">${postTextHtml}</div>
+            <div class="post-edit-area" id="postEditArea_${postDoc.id}">
+                <textarea class="post-edit-textarea" id="postEditInput_${postDoc.id}"
+                    oninput="updateEditHashtagPreview('${postDoc.id}', this.value)"
+                    placeholder="Edit your post...">${post.text || ''}</textarea>
+                <div class="post-edit-actions">
+                    <div class="post-edit-preview" id="postEditPreview_${postDoc.id}"></div>
+                    <div class="post-edit-btns">
+                        <button class="edit-cancel-btn" onclick="cancelEditPost('${postDoc.id}')">Cancel</button>
+                        <button class="edit-save-btn" id="postEditSave_${postDoc.id}" onclick="saveEditPost('${postDoc.id}')">Save</button>
+                    </div>
+                </div>
+            </div>
             <div class="post-actions">
                 <button class="post-action ${isLiked ? 'liked' : ''}" onclick="toggleLike('${postDoc.id}', ${isLiked})">${isLiked ? '❤️' : '🤍'}<span class="post-action-count">${post.likesCount || 0}</span></button>
                 <button class="post-action" onclick="openComments('${postDoc.id}')">💬<span class="post-action-count">${post.commentsCount || 0}</span></button>
@@ -716,30 +867,293 @@
             </div>`;
     }
 
-    function loadPosts() {
-        onSnapshot(query(collection(db, 'posts'), orderBy('createdAt', 'desc')), (snapshot) => {
-            const container = document.getElementById('postsContainer');
-            if (snapshot.empty) { container.innerHTML = '<div class="empty-feed"><div class="empty-feed-icon">📱</div><h3>Welcome to HT Social!</h3><p>Share your first post</p></div>'; return; }
-            container.innerHTML = '';
-            let hasVisible = false;
-            snapshot.forEach((postDoc) => {
-                const post = postDoc.data();
-                // Hide private posts from other users (admin can see all)
-                if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin) return;
-                hasVisible = true;
-                const el = document.createElement('div');
-                el.className = 'post' + (post.isPrivate ? ' private-post' : '');
-                el.innerHTML = buildPostHTML(postDoc);
-                container.appendChild(el);
-            });
-            if (!hasVisible) container.innerHTML = '<div class="empty-feed"><div class="empty-feed-icon">📱</div><h3>Welcome to HT Social!</h3><p>Share your first post</p></div>';
-        });
+    // ── FEED TAB SWITCHING ────────────────────────────────────────────────────
+
+    window.switchFeedTab = (mode) => {
+        currentFeedMode = mode;
+        currentHashtag = null;
+
+        // Cancel previous listener
+        if (unsubscribeFeed) { unsubscribeFeed(); unsubscribeFeed = null; }
+
+        // Update tab UI
+        document.getElementById('feedTabs').style.display = 'flex';
+        document.getElementById('hashtagFeedHeader').classList.remove('active');
+        document.querySelectorAll('.feed-tab-btn').forEach(t => t.classList.remove('active'));
+
+        if (mode === 'forYou') {
+            document.getElementById('tabForYou').classList.add('active');
+            loadPosts();
+        } else if (mode === 'following') {
+            document.getElementById('tabFollowing').classList.add('active');
+            loadFollowingFeed();
+        }
+    };
+
+    // ── HASHTAG FEED ──────────────────────────────────────────────────────────
+
+    window.showHashtagFeed = (tag) => {
+        currentFeedMode = 'hashtag';
+        currentHashtag = tag;
+
+        // Cancel previous listener
+        if (unsubscribeFeed) { unsubscribeFeed(); unsubscribeFeed = null; }
+
+        // Update UI
+        document.querySelectorAll('.feed-tab-btn').forEach(t => t.classList.remove('active'));
+        document.getElementById('hashtagFeedHeader').classList.add('active');
+        document.getElementById('hashtagFeedTitle').textContent = '#' + tag;
+        document.getElementById('hashtagFeedSubtitle').textContent = 'Loading...';
+
+        // Scroll to top of feed
+        const feedEl = document.querySelector('.feed');
+        if (feedEl) feedEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        const container = document.getElementById('postsContainer');
+        container.innerHTML = '<div class="empty-feed"><div class="empty-feed-icon">⏳</div><h3>Loading...</h3></div>';
+
+        unsubscribeFeed = onSnapshot(
+            query(collection(db, 'posts'), orderBy('createdAt', 'desc')),
+            (snapshot) => {
+                if (currentFeedMode !== 'hashtag' || currentHashtag !== tag) return;
+                container.innerHTML = '';
+
+                // Filter: match stored hashtags array OR extract from text (supports old posts)
+                const matchingDocs = snapshot.docs.filter(d => {
+                    const post = d.data();
+                    const tags = (post.hashtags && post.hashtags.length > 0)
+                        ? post.hashtags
+                        : extractHashtags(post.text || '');
+                    return tags.includes(tag.toLowerCase());
+                });
+
+                const count = matchingDocs.length;
+                document.getElementById('hashtagFeedSubtitle').textContent = `${count} post${count !== 1 ? 's' : ''}`;
+
+                if (matchingDocs.length === 0) {
+                    container.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">#️⃣</div><h3>No posts for #${tag}</h3><p>Be the first to use this hashtag!</p></div>`;
+                    return;
+                }
+                let hasVisible = false;
+                matchingDocs.forEach((postDoc) => {
+                    const post = postDoc.data();
+                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin) return;
+                    hasVisible = true;
+                    const el = document.createElement('div');
+                    el.className = 'post' + (post.isPrivate ? ' private-post' : '');
+                    el.innerHTML = buildPostHTML(postDoc);
+                    container.appendChild(el);
+                });
+                if (!hasVisible) container.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">#️⃣</div><h3>No posts for #${tag}</h3><p>Be the first!</p></div>`;
+            },
+            (e) => {
+                container.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">⚠️</div><h3>Error loading posts</h3><p>${e.message}</p></div>`;
+            }
+        );
+    };
+
+    // ── FOLLOWING FEED ────────────────────────────────────────────────────────
+
+    async function loadFollowingFeed() {
+        const container = document.getElementById('postsContainer');
+        container.innerHTML = '<div class="empty-feed"><div class="empty-feed-icon">⏳</div><h3>Loading...</h3></div>';
+
+        try {
+            // Get who this user follows
+            const followsSnap = await getDocs(
+                query(collection(db, 'follows'), where('followerId', '==', auth.currentUser.uid))
+            );
+            const followingIds = followsSnap.docs.map(d => d.data().followingId);
+
+            if (followingIds.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-feed">
+                        <div class="empty-feed-icon">👥</div>
+                        <h3>No one followed yet</h3>
+                        <p>Follow people to see their posts here</p>
+                    </div>`;
+                return;
+            }
+
+            // Firestore 'in' supports max 30 values
+            const idsToQuery = followingIds.slice(0, 30);
+
+            unsubscribeFeed = onSnapshot(
+                query(collection(db, 'posts'), where('userId', 'in', idsToQuery), orderBy('createdAt', 'desc')),
+                (snapshot) => {
+                    if (currentFeedMode !== 'following') return;
+                    container.innerHTML = '';
+                    if (snapshot.empty) {
+                        container.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">📭</div><h3>Nothing here yet</h3><p>People you follow haven't posted anything</p></div>`;
+                        return;
+                    }
+                    let hasVisible = false;
+                    snapshot.forEach((postDoc) => {
+                        const post = postDoc.data();
+                        if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin) return;
+                        hasVisible = true;
+                        const el = document.createElement('div');
+                        el.className = 'post' + (post.isPrivate ? ' private-post' : '');
+                        el.innerHTML = buildPostHTML(postDoc);
+                        container.appendChild(el);
+                    });
+                    if (!hasVisible) container.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">📭</div><h3>Nothing here yet</h3><p>People you follow haven't posted anything</p></div>`;
+                },
+                (e) => {
+                    container.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">⚠️</div><h3>Error</h3><p>${e.message}</p></div>`;
+                }
+            );
+        } catch (e) {
+            container.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">⚠️</div><h3>Error</h3><p>${e.message}</p></div>`;
+        }
     }
 
-    window.togglePostPrivacy = async (postId, currentlyPrivate) => {
+    // ── FOR YOU FEED (all posts) ───────────────────────────────────────────────
+
+    function loadPosts() {
+        if (unsubscribeFeed) { unsubscribeFeed(); unsubscribeFeed = null; }
+        unsubscribeFeed = onSnapshot(
+            query(collection(db, 'posts'), orderBy('createdAt', 'desc')),
+            (snapshot) => {
+                if (currentFeedMode !== 'forYou') return;
+                const container = document.getElementById('postsContainer');
+                if (snapshot.empty) {
+                    container.innerHTML = '<div class="empty-feed"><div class="empty-feed-icon">📱</div><h3>Welcome to HT Social!</h3><p>Share your first post</p></div>';
+                    return;
+                }
+                container.innerHTML = '';
+                let hasVisible = false;
+                snapshot.forEach((postDoc) => {
+                    const post = postDoc.data();
+                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin) return;
+                    hasVisible = true;
+                    const el = document.createElement('div');
+                    el.className = 'post' + (post.isPrivate ? ' private-post' : '');
+                    el.innerHTML = buildPostHTML(postDoc);
+                    container.appendChild(el);
+                });
+                if (!hasVisible) container.innerHTML = '<div class="empty-feed"><div class="empty-feed-icon">📱</div><h3>Welcome to HT Social!</h3><p>Share your first post</p></div>';
+            }
+        );
+    }
+
+    // ── TRENDING HASHTAGS ─────────────────────────────────────────────────────
+
+    window.loadTrendingHashtags = async () => {
+        const container = document.getElementById('trendingHashtags');
+        if (!container) return;
         try {
-            await updateDoc(doc(db, 'posts', postId), { isPrivate: !currentlyPrivate });
-        } catch (e) { alert('Failed: ' + e.message); }
+            const snap = await getDocs(query(collection(db, 'posts'), orderBy('createdAt', 'desc')));
+            const hashtagCounts = {};
+            snap.forEach(d => {
+                const data = d.data();
+                // Use stored array if available, otherwise extract from text (for older posts)
+                const tags = (data.hashtags && data.hashtags.length > 0)
+                    ? data.hashtags
+                    : extractHashtags(data.text || '');
+                tags.forEach(tag => {
+                    hashtagCounts[tag] = (hashtagCounts[tag] || 0) + 1;
+                });
+            });
+
+            const sorted = Object.entries(hashtagCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<p class="trending-empty">No hashtags yet — start posting!</p>';
+                return;
+            }
+
+            container.innerHTML = sorted.map(([tag, count], idx) => `
+                <div class="trending-tag" onclick="window.showHashtagFeed('${tag}')">
+                    <div class="trending-tag-left">
+                        <span class="trending-tag-rank ${idx < 3 ? 'top' : ''}">${idx + 1}</span>
+                        <span class="trending-tag-name">#${tag}</span>
+                    </div>
+                    <span class="trending-tag-count">${count} post${count !== 1 ? 's' : ''}</span>
+                </div>
+            `).join('');
+        } catch (e) {
+            container.innerHTML = '<p class="trending-empty">Could not load trends</p>';
+        }
+    };
+
+    window.togglePostPrivacy = async (postId, currentlyPrivate) => {
+        try { await updateDoc(doc(db, 'posts', postId), { isPrivate: !currentlyPrivate }); }
+        catch (e) { alert('Failed: ' + e.message); }
+    };
+
+    // ── EDIT POST ─────────────────────────────────────────────────────────────
+
+    window.toggleEditArea = (postId) => {
+        const area = document.getElementById(`postEditArea_${postId}`);
+        const content = document.getElementById(`postContent_${postId}`);
+        if (!area) return;
+        const isOpen = area.classList.contains('active');
+        if (isOpen) {
+            area.classList.remove('active');
+        } else {
+            area.classList.add('active');
+            const ta = document.getElementById(`postEditInput_${postId}`);
+            if (ta) {
+                ta.style.height = 'auto';
+                ta.style.height = ta.scrollHeight + 'px';
+                ta.focus();
+                ta.setSelectionRange(ta.value.length, ta.value.length);
+                // Show initial hashtag preview
+                updateEditHashtagPreview(postId, ta.value);
+            }
+        }
+    };
+
+    window.cancelEditPost = (postId) => {
+        const area = document.getElementById(`postEditArea_${postId}`);
+        if (area) area.classList.remove('active');
+        // Reset textarea to original text (re-fetch from DOM)
+        const ta = document.getElementById(`postEditInput_${postId}`);
+        if (ta) { document.getElementById(`postEditPreview_${postId}`).innerHTML = ''; }
+    };
+
+    window.updateEditHashtagPreview = (postId, text) => {
+        const preview = document.getElementById(`postEditPreview_${postId}`);
+        if (!preview) return;
+        const tags = extractHashtags(text);
+        preview.innerHTML = tags.length
+            ? tags.map(t => `<span class="hashtag-chip">#️⃣ #${t}</span>`).join('')
+            : '';
+        // auto-resize textarea
+        const ta = document.getElementById(`postEditInput_${postId}`);
+        if (ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+    };
+
+    window.saveEditPost = async (postId) => {
+        const ta = document.getElementById(`postEditInput_${postId}`);
+        const saveBtn = document.getElementById(`postEditSave_${postId}`);
+        if (!ta) return;
+        const newText = ta.value.trim();
+        if (!newText) { alert('Post text cannot be empty.'); return; }
+        try {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            const newHashtags = extractHashtags(newText);
+            await updateDoc(doc(db, 'posts', postId), {
+                text: newText,
+                hashtags: newHashtags,
+                editedAt: serverTimestamp()
+            });
+            // Close edit area (live listener will update the post content)
+            const area = document.getElementById(`postEditArea_${postId}`);
+            if (area) area.classList.remove('active');
+            saveBtn.textContent = 'Save';
+            saveBtn.disabled = false;
+            // Refresh trending since hashtags may have changed
+            loadTrendingHashtags();
+        } catch (e) {
+            alert('Failed to save: ' + e.message);
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save';
+        }
     };
 
     // ── Likes ─────────────────────────────────────────────────────────────────
@@ -870,9 +1284,7 @@
             document.getElementById('profilePagePostsCount').textContent = u.postsCount || 0;
             document.getElementById('profilePageFollowersCount').textContent = u.followersCount || 0;
             document.getElementById('profilePageFollowingCount').textContent = u.followingCount || 0;
-            // banned badge
             document.getElementById('profileBannedBadge').style.display = u.banned ? 'inline-flex' : 'none';
-
             const followBtn = document.getElementById('followBtn');
             if (userId === auth.currentUser.uid) {
                 followBtn.style.display = 'none';
@@ -882,8 +1294,6 @@
                 followBtn.textContent = isFoll ? 'Following' : 'Follow';
                 followBtn.className = 'follow-btn-large' + (isFoll ? ' following' : '');
             }
-
-            // Admin controls on other profiles
             const adminActions = document.getElementById('adminProfileActions');
             const adminBanBtn = document.getElementById('adminProfileBanBtn');
             if (isAdmin && userId !== auth.currentUser.uid) {
@@ -893,7 +1303,6 @@
             } else {
                 adminActions.style.display = 'none';
             }
-
             document.querySelector('.content').style.display = 'none';
             document.getElementById('profilePage').classList.add('active');
             loadProfilePosts(userId);
@@ -950,7 +1359,6 @@
             let hasVisible = false;
             snapshot.forEach((pd) => {
                 const post = pd.data();
-                // Hide private posts when viewing someone else's profile (admin sees all)
                 if (post.isPrivate && !isOwnProfile && !isAdmin) return;
                 hasVisible = true;
                 const el = document.createElement('div');
@@ -962,16 +1370,13 @@
         });
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // ── ADMIN COMMANDS ────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── ADMIN ─────────────────────────────────────────────────────────────────
 
     function showAdminUI() {
         document.getElementById('adminPanelIconBtn').style.display = 'block';
         document.getElementById('sidebarAdminBtn').style.display = 'block';
         document.getElementById('sidebarAdminBadge').style.display = 'inline-flex';
     }
-
     function hideAdminUI() {
         document.getElementById('adminPanelIconBtn').style.display = 'none';
         document.getElementById('sidebarAdminBtn').style.display = 'none';
@@ -986,12 +1391,10 @@
         await loadAdminPosts();
         await loadAdminReports();
     };
-
     window.closeAdminPanel = () => {
         document.getElementById('adminPanel').classList.remove('active');
         document.body.style.overflow = 'auto';
     };
-
     window.switchAdminTab = (tab, event) => {
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
@@ -1039,7 +1442,7 @@
             <div class="admin-post-row" id="adminPostRow_${p.id}">
                 <div style="flex:1;min-width:0;">
                     <div class="admin-post-text">${escapeHtml(p.text || '[Image only]')}</div>
-                    <div class="admin-post-meta">by ${escapeHtml(p.userName || 'Unknown')} · ❤️ ${p.likesCount || 0} · 💬 ${p.commentsCount || 0}</div>
+                    <div class="admin-post-meta">by ${escapeHtml(p.userName || 'Unknown')} · ❤️ ${p.likesCount || 0} · 💬 ${p.commentsCount || 0}${p.hashtags && p.hashtags.length ? ' · 🏷 ' + p.hashtags.map(t => '#' + t).join(' ') : ''}</div>
                 </div>
                 <button class="btn-delete-post" onclick="adminDeletePost('${p.id}', '${p.userId}')">🗑 Delete</button>
             </div>
@@ -1047,30 +1450,22 @@
     }
 
     window.filterAdminPosts = (q) => {
-        const filtered = adminAllPosts.filter(p => (p.text || '').toLowerCase().includes(q.toLowerCase()) || (p.userName || '').toLowerCase().includes(q.toLowerCase()));
+        const filtered = adminAllPosts.filter(p => (p.text || '').toLowerCase().includes(q.toLowerCase()) || (p.userName || '').toLowerCase().includes(q.toLowerCase()) || (p.hashtags || []).some(t => t.includes(q.toLowerCase())));
         renderAdminPosts(filtered);
     };
-
-    // ── Admin: Delete a single post ──────────────────────────────────────────
 
     window.adminDeletePost = async (postId, userId) => {
         if (!confirm('Delete this post? This cannot be undone.')) return;
         try {
             await deleteDoc(doc(db, 'posts', postId));
-            if (userId) {
-                try { await updateDoc(doc(db, 'users', userId), { postsCount: increment(-1) }); } catch (_) {}
-            }
-            // Remove from admin list cache
+            if (userId) { try { await updateDoc(doc(db, 'users', userId), { postsCount: increment(-1) }); } catch (_) {} }
             adminAllPosts = adminAllPosts.filter(p => p.id !== postId);
             const row = document.getElementById(`adminPostRow_${postId}`);
             if (row) row.remove();
-            const postEl = document.querySelector(`[data-post-id="${postId}"]`);
-            if (postEl) postEl.remove();
             addAdminLog(`Deleted post ${postId} (owner: ${userId})`);
+            loadTrendingHashtags();
         } catch (e) { alert('Failed to delete post: ' + e.message); }
     };
-
-    // ── Admin: Delete a comment ──────────────────────────────────────────────
 
     window.adminDeleteComment = async (commentId, postId) => {
         if (!confirm('Delete this comment?')) return;
@@ -1081,32 +1476,24 @@
         } catch (e) { alert('Failed: ' + e.message); }
     };
 
-    // ── Admin: Ban / Unban user ──────────────────────────────────────────────
-
     window.adminToggleBan = async (userId, isBanned) => {
         const action = isBanned ? 'Unban' : 'Ban';
         if (!confirm(`${action} this user?`)) return;
         try {
             await updateDoc(doc(db, 'users', userId), { banned: !isBanned });
             addAdminLog(`${action}ned user ${userId}`);
-            await loadAdminUsers(); // refresh
+            await loadAdminUsers();
             await loadAdminOverview();
         } catch (e) { alert('Failed: ' + e.message); }
     };
-
-    // ── Admin: Ban/unban from profile page ───────────────────────────────────
 
     window.adminToggleBanFromProfile = async () => {
         if (!currentViewingUserId) return;
         const ud = await getDoc(doc(db, 'users', currentViewingUserId));
         if (!ud.exists()) return;
-        const isBanned = ud.data().banned;
-        await adminToggleBan(currentViewingUserId, isBanned);
-        // Refresh profile UI
+        await adminToggleBan(currentViewingUserId, ud.data().banned);
         showProfile(currentViewingUserId);
     };
-
-    // ── Admin: Delete ALL posts by user ──────────────────────────────────────
 
     window.adminDeleteAllPostsByUser = async (userId, userName) => {
         if (!confirm(`Delete ALL posts by "${userName}"? This cannot be undone.`)) return;
@@ -1120,6 +1507,7 @@
             addAdminLog(`Nuked all ${snap.size} posts by user ${userId} (${userName})`);
             await loadAdminPosts();
             await loadAdminOverview();
+            loadTrendingHashtags();
             alert(`Deleted ${snap.size} posts by ${userName}.`);
         } catch (e) { alert('Failed: ' + e.message); }
     };
@@ -1130,8 +1518,6 @@
         if (!ud.exists()) return;
         await adminDeleteAllPostsByUser(currentViewingUserId, ud.data().displayName);
     };
-
-    // ── Admin: Site-wide Announcement ────────────────────────────────────────
 
     window.postAnnouncement = async () => {
         const text = document.getElementById('announceText').value.trim();
@@ -1163,61 +1549,35 @@
         });
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // ── REPORT SYSTEM ─────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── Report System ─────────────────────────────────────────────────────────
 
-    let currentReportPostId = null;
-    let currentReportPostOwnerId = null;
-    let currentReportPostText = null;
-    let selectedReportReason = null;
+    let currentReportPostId = null, currentReportPostOwnerId = null, currentReportPostText = null, selectedReportReason = null;
 
     window.openReportModal = (postId, ownerId, postText) => {
-        currentReportPostId = postId;
-        currentReportPostOwnerId = ownerId;
-        currentReportPostText = postText;
+        currentReportPostId = postId; currentReportPostOwnerId = ownerId; currentReportPostText = postText;
         selectedReportReason = null;
         document.querySelectorAll('.report-reason-btn').forEach(b => b.classList.remove('selected'));
         document.getElementById('reportSubmitBtn').disabled = true;
         document.getElementById('reportModal').classList.add('active');
     };
-
     window.closeReportModal = () => {
         document.getElementById('reportModal').classList.remove('active');
         currentReportPostId = null; selectedReportReason = null;
     };
-
     window.closeReportIfOutside = (e) => { if (e.target.id === 'reportModal') closeReportModal(); };
-
     window.selectReason = (btn, reason) => {
         document.querySelectorAll('.report-reason-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedReportReason = reason;
+        btn.classList.add('selected'); selectedReportReason = reason;
         document.getElementById('reportSubmitBtn').disabled = false;
     };
-
     window.submitReport = async () => {
         if (!selectedReportReason || !currentReportPostId) return;
         const btn = document.getElementById('reportSubmitBtn');
         btn.disabled = true; btn.textContent = 'Submitting...';
         try {
-            // Check if already reported by this user
             const existing = await getDocs(query(collection(db, 'reports'), where('postId', '==', currentReportPostId), where('reportedBy', '==', auth.currentUser.uid)));
             if (!existing.empty) { alert('You already reported this post.'); closeReportModal(); btn.textContent = 'Submit Report'; return; }
-
-            await addDoc(collection(db, 'reports'), {
-                postId: currentReportPostId,
-                postOwnerId: currentReportPostOwnerId,
-                postOwnerName: '', // filled below
-                postText: currentReportPostText,
-                reportedBy: auth.currentUser.uid,
-                reportedByName: currentUserData.displayName,
-                reason: selectedReportReason,
-                status: 'pending',
-                createdAt: serverTimestamp(),
-                timestamp: Date.now()
-            });
-            // Also fetch the post owner's name to store
+            await addDoc(collection(db, 'reports'), { postId: currentReportPostId, postOwnerId: currentReportPostOwnerId, postOwnerName: '', postText: currentReportPostText, reportedBy: auth.currentUser.uid, reportedByName: currentUserData.displayName, reason: selectedReportReason, status: 'pending', createdAt: serverTimestamp(), timestamp: Date.now() });
             try {
                 const ownerDoc = await getDoc(doc(db, 'users', currentReportPostOwnerId));
                 if (ownerDoc.exists()) {
@@ -1225,58 +1585,40 @@
                     if (!lastReport.empty) await updateDoc(doc(db, 'reports', lastReport.docs[0].id), { postOwnerName: ownerDoc.data().displayName });
                 }
             } catch (_) {}
-
             closeReportModal();
             alert('✅ Report submitted. Our team will review it.');
         } catch (e) { alert('Failed: ' + e.message); btn.disabled = false; btn.textContent = 'Submit Report'; }
     };
-
-    // ── Admin: Load Reports Queue ─────────────────────────────────────────────
 
     window.loadAdminReports = async () => {
         try {
             const snap = await getDocs(query(collection(db, 'reports'), orderBy('timestamp', 'desc')));
             const list = document.getElementById('adminReportList');
             if (!list) return;
-
             const pendingCount = snap.docs.filter(d => d.data().status === 'pending').length;
-            // Update badges
             ['reportsBadge', 'headerReportsBadge'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) { el.textContent = pendingCount; el.style.display = pendingCount > 0 ? 'block' : 'none'; }
             });
-
             if (snap.empty) { list.innerHTML = '<div class="admin-empty">🎉 No reports yet!</div>'; return; }
-
             list.innerHTML = snap.docs.map(d => {
                 const r = d.data();
                 const timeAgo = r.timestamp ? getTimeAgo(new Date(r.timestamp)) : 'Recently';
                 const isResolved = r.status !== 'pending';
-                return `
-                <div class="report-card ${isResolved ? 'resolved' : ''}" id="reportCard_${d.id}">
+                return `<div class="report-card ${isResolved ? 'resolved' : ''}" id="reportCard_${d.id}">
                     <div class="report-card-header">
                         <div class="report-card-reason">🚩 ${escapeHtml(r.reason)} ${isResolved ? '<span class="resolved-badge">RESOLVED</span>' : ''}</div>
                         <div class="report-card-time">${timeAgo}</div>
                     </div>
                     <div class="report-card-post">"${escapeHtml(r.postText || '[Image post]')}"</div>
-                    <div class="report-card-meta">
-                        Reported by <strong>${escapeHtml(r.reportedByName || 'Unknown')}</strong> · 
-                        Post by <strong>${escapeHtml(r.postOwnerName || r.postOwnerId || 'Unknown')}</strong>
-                    </div>
-                    ${!isResolved ? `
-                    <div class="report-card-actions">
+                    <div class="report-card-meta">Reported by <strong>${escapeHtml(r.reportedByName || 'Unknown')}</strong> · Post by <strong>${escapeHtml(r.postOwnerName || r.postOwnerId || 'Unknown')}</strong></div>
+                    ${!isResolved ? `<div class="report-card-actions">
                         <button class="btn-dismiss" onclick="adminResolveReport('${d.id}')">✓ Dismiss</button>
                         <button class="btn-del-reported" onclick="adminDeleteReportedPost('${d.id}', '${r.postId}', '${r.postOwnerId}')">🗑 Delete Post</button>
-                        <select class="tempban-duration-select" id="tempDur_${d.id}">
-                            <option value="1">1 hour</option>
-                            <option value="6">6 hours</option>
-                            <option value="24" selected>24 hours</option>
-                            <option value="72">3 days</option>
-                            <option value="168">7 days</option>
-                        </select>
+                        <select class="tempban-duration-select" id="tempDur_${d.id}"><option value="1">1 hour</option><option value="6">6 hours</option><option value="24" selected>24 hours</option><option value="72">3 days</option><option value="168">7 days</option></select>
                         <button class="btn-temp-ban" onclick="adminTempBanFromReport('${d.id}', '${r.postOwnerId}')">⏳ Temp Ban</button>
                         <button class="btn-perm-ban" onclick="adminPermBanFromReport('${d.id}', '${r.postOwnerId}')">🚫 Perm Ban</button>
-                    </div>` : '<div style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:4px;">Resolved — no further action needed.</div>'}
+                    </div>` : '<div style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:4px;">Resolved</div>'}
                 </div>`;
             }).join('');
         } catch (e) {
@@ -1286,28 +1628,19 @@
     };
 
     window.adminResolveReport = async (reportId) => {
-        try {
-            await updateDoc(doc(db, 'reports', reportId), { status: 'resolved', resolvedAt: serverTimestamp() });
-            addAdminLog(`Dismissed report ${reportId}`);
-            await loadAdminReports();
-        } catch (e) { alert('Failed: ' + e.message); }
+        try { await updateDoc(doc(db, 'reports', reportId), { status: 'resolved', resolvedAt: serverTimestamp() }); addAdminLog(`Dismissed report ${reportId}`); await loadAdminReports(); }
+        catch (e) { alert('Failed: ' + e.message); }
     };
-
     window.adminDeleteReportedPost = async (reportId, postId, postOwnerId) => {
         if (!confirm('Delete this reported post?')) return;
         try {
             await deleteDoc(doc(db, 'posts', postId));
             try { await updateDoc(doc(db, 'users', postOwnerId), { postsCount: increment(-1) }); } catch (_) {}
             await updateDoc(doc(db, 'reports', reportId), { status: 'resolved', resolvedAt: serverTimestamp(), action: 'post_deleted' });
-            addAdminLog(`Deleted reported post ${postId} (report: ${reportId})`);
-            await loadAdminReports();
-            await loadAdminPosts();
+            addAdminLog(`Deleted reported post ${postId}`);
+            await loadAdminReports(); await loadAdminPosts(); loadTrendingHashtags();
         } catch (e) { alert('Failed: ' + e.message); }
     };
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // ── TEMP BAN SYSTEM ───────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────────────────
 
     const TEMP_BAN_DURATIONS = { 1: '1 hour', 6: '6 hours', 24: '24 hours', 72: '3 days', 168: '7 days' };
 
@@ -1318,32 +1651,22 @@
         if (!confirm(`Temp ban this user for ${label}?`)) return;
         await applyTempBan(userId, hours);
         await updateDoc(doc(db, 'reports', reportId), { status: 'resolved', resolvedAt: serverTimestamp(), action: `temp_ban_${hours}h` });
-        addAdminLog(`Temp banned user ${userId} for ${label} (via report ${reportId})`);
+        addAdminLog(`Temp banned user ${userId} for ${label}`);
         await loadAdminReports();
     };
-
     window.adminPermBanFromReport = async (reportId, userId) => {
         if (!confirm('Permanently ban this user?')) return;
         await updateDoc(doc(db, 'users', userId), { banned: true, bannedUntil: null });
         await updateDoc(doc(db, 'reports', reportId), { status: 'resolved', resolvedAt: serverTimestamp(), action: 'perm_ban' });
-        addAdminLog(`Permanently banned user ${userId} (via report ${reportId})`);
-        await loadAdminReports();
-        await loadAdminOverview();
+        addAdminLog(`Permanently banned user ${userId}`);
+        await loadAdminReports(); await loadAdminOverview();
     };
 
     async function applyTempBan(userId, hours) {
         const until = new Date(Date.now() + hours * 60 * 60 * 1000);
-        try {
-            await updateDoc(doc(db, 'users', userId), {
-                banned: false,         // not a perm ban
-                tempBanned: true,
-                bannedUntil: until.getTime(), // store as ms timestamp
-                bannedUntilDate: until.toISOString()
-            });
-        } catch (e) { alert('Failed to temp ban: ' + e.message); }
+        try { await updateDoc(doc(db, 'users', userId), { banned: false, tempBanned: true, bannedUntil: until.getTime(), bannedUntilDate: until.toISOString() }); }
+        catch (e) { alert('Failed to temp ban: ' + e.message); }
     }
-
-    // ── Also wire temp ban into Users tab ────────────────────────────────────
 
     function renderAdminUsers(users) {
         const list = document.getElementById('adminUserList');
@@ -1353,8 +1676,7 @@
             const tempLabel = isTempBanned ? `<span class="tempbanned-badge">TEMP BAN ${formatBanExpiry(u.bannedUntil)}</span>` : '';
             const permLabel = u.banned ? '<span class="banned-badge">BANNED</span>' : '';
             const isAdminUser = u.id === ADMIN_UID;
-            return `
-            <div class="admin-user-row ${u.banned ? 'banned' : isTempBanned ? 'banned' : ''}" id="adminUserRow_${u.id}">
+            return `<div class="admin-user-row ${u.banned || isTempBanned ? 'banned' : ''}" id="adminUserRow_${u.id}">
                 <div class="admin-user-info">
                     <div class="admin-avatar">${u.displayName ? u.displayName.charAt(0).toUpperCase() : '?'}</div>
                     <div>
@@ -1362,15 +1684,11 @@
                         <div class="admin-user-meta">${escapeHtml(u.email || '')} · ${u.postsCount || 0} posts</div>
                     </div>
                 </div>
-                ${!isAdminUser ? `
-                <div class="admin-user-actions">
+                ${!isAdminUser ? `<div class="admin-user-actions">
                     <button class="admin-action-btn btn-view" onclick="showProfile('${u.id}'); closeAdminPanel();">👁 View</button>
-                    ${(u.banned) ? `<button class="admin-action-btn btn-unban" onclick="adminToggleBan('${u.id}', true)">✅ Unban</button>` :
+                    ${u.banned ? `<button class="admin-action-btn btn-unban" onclick="adminToggleBan('${u.id}', true)">✅ Unban</button>` :
                       isTempBanned ? `<button class="admin-action-btn btn-unban" onclick="adminLiftTempBan('${u.id}')">✅ Lift TempBan</button>` :
-                      `<select class="tempban-duration-select" id="userTempDur_${u.id}">
-                          <option value="1">1h</option><option value="6">6h</option>
-                          <option value="24" selected>24h</option><option value="72">3d</option><option value="168">7d</option>
-                       </select>
+                      `<select class="tempban-duration-select" id="userTempDur_${u.id}"><option value="1">1h</option><option value="6">6h</option><option value="24" selected>24h</option><option value="72">3d</option><option value="168">7d</option></select>
                        <button class="admin-action-btn btn-temp-ban" onclick="adminTempBanUser('${u.id}')">⏳ Temp Ban</button>
                        <button class="admin-action-btn btn-ban" onclick="adminToggleBan('${u.id}', false)">🚫 Perm Ban</button>`}
                     <button class="admin-action-btn btn-delete-posts" onclick="adminDeleteAllPostsByUser('${u.id}', '${escapeHtml(u.displayName || 'User')}')">💣 Nuke Posts</button>
@@ -1388,21 +1706,16 @@
         addAdminLog(`Temp banned user ${userId} for ${label}`);
         await loadAdminUsers();
     };
-
     window.adminLiftTempBan = async (userId) => {
-        try {
-            await updateDoc(doc(db, 'users', userId), { tempBanned: false, bannedUntil: null });
-            addAdminLog(`Lifted temp ban on user ${userId}`);
-            await loadAdminUsers();
-        } catch (e) { alert('Failed: ' + e.message); }
+        try { await updateDoc(doc(db, 'users', userId), { tempBanned: false, bannedUntil: null }); addAdminLog(`Lifted temp ban on user ${userId}`); await loadAdminUsers(); }
+        catch (e) { alert('Failed: ' + e.message); }
     };
 
     function formatBanExpiry(ms) {
         if (!ms) return '';
         const diff = ms - Date.now();
         if (diff <= 0) return '(expired)';
-        const h = Math.floor(diff / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
+        const h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000);
         return h > 0 ? `(${h}h ${m}m left)` : `(${m}m left)`;
     }
 
@@ -1416,9 +1729,7 @@
         });
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // ── AUTH STATE ────────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── Auth state ────────────────────────────────────────────────────────────
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -1429,7 +1740,6 @@
             }
             const userData = userDoc.data();
 
-            // ── Ban check (perm + temp) ──
             const now = Date.now();
             const isPermBanned = userData.banned && user.uid !== ADMIN_UID;
             const isTempBanned = userData.tempBanned && userData.bannedUntil && userData.bannedUntil > now && user.uid !== ADMIN_UID;
@@ -1438,21 +1748,18 @@
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainContainer').classList.remove('active');
                 document.getElementById('banScreen').classList.add('active');
-
                 if (isTempBanned) {
                     document.getElementById('banTitle').textContent = 'Temporarily Suspended';
                     document.getElementById('banMsg').textContent = 'Your account is temporarily suspended.';
-                    // Live countdown
                     const updateTimer = () => {
                         const diff = userData.bannedUntil - Date.now();
                         if (diff <= 0) { document.getElementById('banTimer').textContent = 'Suspension expired — please refresh.'; return; }
                         const h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
                         document.getElementById('banTimer').textContent = `Lifts in: ${h}h ${m}m ${s}s`;
                     };
-                    updateTimer();
-                    setInterval(updateTimer, 1000);
+                    updateTimer(); setInterval(updateTimer, 1000);
                 } else {
-                    document.getElementById('banTitle').textContent = 'You\'ve Been Banned';
+                    document.getElementById('banTitle').textContent = "You've Been Banned";
                     document.getElementById('banMsg').textContent = 'Your account has been permanently suspended by an administrator.';
                 }
                 return;
@@ -1461,13 +1768,7 @@
             currentUserData = userData;
             isAdmin = user.uid === ADMIN_UID;
 
-            // make sure admin UI is consistent every time we land here
-            if (isAdmin) {
-                showAdminUI();
-                listenReportsBadge();
-            } else {
-                hideAdminUI();
-            }
+            if (isAdmin) { showAdminUI(); listenReportsBadge(); } else { hideAdminUI(); }
 
             const initial = userData.displayName.charAt(0).toUpperCase();
             document.getElementById('headerAvatar').textContent = initial;
@@ -1481,9 +1782,13 @@
 
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainContainer').classList.add('active');
+
+            // Reset to For You feed on login
+            currentFeedMode = 'forYou';
             loadPosts();
             loadNotifications();
             listenAnnouncement();
+            loadTrendingHashtags();
 
             onSnapshot(doc(db, 'users', user.uid), (snap) => {
                 if (snap.exists()) {
@@ -1499,10 +1804,9 @@
                 if (panel.classList.contains('active') && !panel.contains(e.target) && !e.target.closest('.icon-btn-wrapper')) panel.classList.remove('active');
             });
         } else {
-            // signing out / no user: hide admin bits and reset flag
             isAdmin = false;
             hideAdminUI();
-
+            if (unsubscribeFeed) { unsubscribeFeed(); unsubscribeFeed = null; }
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('mainContainer').classList.remove('active');
         }
