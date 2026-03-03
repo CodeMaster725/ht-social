@@ -40,6 +40,28 @@
         /* ── ADMIN BADGE ── */
         .admin-crown { font-size: 13px; background: linear-gradient(135deg, #f7b733, #fc4a1a); color: white; padding: 2px 8px; border-radius: 20px; font-weight: 700; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; }
 
+        /* ── POST ADMIN BADGE ── */
+        .post-admin-badge { font-size: 10px; background: linear-gradient(135deg, #f7b733, #fc4a1a); color: white; padding: 1px 6px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; vertical-align: middle; margin-left: 5px; }
+
+        /* ── SUB-ADMIN PANEL ── */
+        .perm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+        .perm-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; cursor: pointer; transition: background 0.15s; }
+        .perm-item:hover { background: rgba(255,255,255,0.12); }
+        .perm-item input[type=checkbox] { width: 16px; height: 16px; accent-color: #f7b733; cursor: pointer; flex-shrink: 0; }
+        .perm-item label { font-size: 13px; color: rgba(255,255,255,0.8); cursor: pointer; }
+        .sub-admin-card { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .sub-admin-card.main { border: 1px solid rgba(247,183,51,0.4); }
+        .sub-admin-perms { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+        .perm-tag { font-size: 10px; background: rgba(247,183,51,0.2); color: #f7b733; border: 1px solid rgba(247,183,51,0.3); padding: 2px 7px; border-radius: 8px; font-weight: 600; }
+        .btn-remove-admin { background: #ed4956; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-remove-admin:hover { background: #c92a39; }
+        .add-admin-form { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px; margin-top: 16px; border: 1px dashed rgba(255,255,255,0.15); }
+        .add-admin-form h4 { font-size: 14px; font-weight: 700; color: #f7b733; margin-bottom: 12px; }
+        .admin-uid-input { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; font-family: monospace; }
+        .admin-uid-input::placeholder { color: rgba(255,255,255,0.3); }
+        .admin-uid-input:focus { outline: none; border-color: #f7b733; }
+        .btn-grant-admin { background: linear-gradient(135deg, #f7b733, #fc4a1a); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
         /* ── ADMIN PANEL ── */
         .admin-panel { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
         .admin-panel.active { display: flex; }
@@ -452,6 +474,7 @@
                 <div class="admin-tab" onclick="switchAdminTab('announce', event)">📢 Announce</div>
                 <div class="admin-tab" style="position:relative;" onclick="switchAdminTab('reports', event)">🚨 Reports<span class="reports-badge" id="reportsBadge"></span></div>
                 <div class="admin-tab" onclick="switchAdminTab('log', event)">📋 Log</div>
+                <div class="admin-tab" id="adminTabAdmins" style="display:none;" onclick="switchAdminTab('admins', event)">👑 Admins</div>
             </div>
             <div class="admin-body">
                 <div class="admin-section active" id="adminSectionOverview">
@@ -487,6 +510,28 @@
                 </div>
                 <div class="admin-section" id="adminSectionLog">
                     <div id="adminLogList"><div class="admin-empty">No actions logged yet this session.</div></div>
+                </div>
+                <!-- ADMINS SECTION (main admin only) -->
+                <div class="admin-section" id="adminSectionAdmins">
+                    <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:16px;">Manage sub-admins and their permissions. Only you (main admin) can see this tab.</p>
+                    <div id="adminAdminsList"><div class="admin-empty">Loading admins...</div></div>
+                    <div class="add-admin-form">
+                        <h4>➕ Grant Admin Access</h4>
+                        <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;">Type a display name to search for a user.</p>
+                        <input type="text" class="admin-uid-input" id="newAdminNameInput" placeholder="Display name..." oninput="searchAdminUserByName(this.value)">
+                        <div id="adminNameSearchResults" style="margin-bottom:12px;"></div>
+                        <input type="hidden" id="newAdminUidInput">
+                        <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:8px;font-weight:600;">Permissions:</p>
+                        <div class="perm-grid">
+                            <div class="perm-item"><input type="checkbox" id="perm_deletePosts" checked><label for="perm_deletePosts">🗑 Delete Posts</label></div>
+                            <div class="perm-item"><input type="checkbox" id="perm_deleteComments" checked><label for="perm_deleteComments">💬 Delete Comments</label></div>
+                            <div class="perm-item"><input type="checkbox" id="perm_banUsers"><label for="perm_banUsers">🚫 Perm Ban Users</label></div>
+                            <div class="perm-item"><input type="checkbox" id="perm_tempBan" checked><label for="perm_tempBan">⏳ Temp Ban Users</label></div>
+                            <div class="perm-item"><input type="checkbox" id="perm_resolveReports" checked><label for="perm_resolveReports">🚨 Resolve Reports</label></div>
+                            <div class="perm-item"><input type="checkbox" id="perm_announce"><label for="perm_announce">📢 Post Announcements</label></div>
+                        </div>
+                        <button class="btn-grant-admin" onclick="grantAdminAccess()">👑 Grant Admin Access</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -620,6 +665,9 @@
     let currentPostId = null;
     let currentViewingUserId = null;
     let isAdmin = false;
+    let isMainAdmin = false;
+    let currentAdminPerms = {}; // permissions for sub-admins
+    let knownAdmins = {};       // uid -> {perms, displayName} cache
     let adminAllUsers = [];
     let adminAllPosts = [];
     let adminLog = [];
@@ -816,7 +864,7 @@
         const isLiked = post.likes && post.likes.includes(auth.currentUser.uid);
         const timeAgo = post.createdAt ? getTimeAgo(post.createdAt.toDate()) : 'Just now';
         const editedTag = post.editedAt ? `<span class="post-edited-tag">(edited)</span>` : '';
-        const adminDeleteBtn = isAdmin ? `<button class="admin-delete-post-btn" onclick="adminDeletePost('${postDoc.id}', '${post.userId}')">🗑 Delete</button>` : '';
+        const adminDeleteBtn = (isAdmin && hasPerm('deletePosts')) ? `<button class="admin-delete-post-btn" onclick="adminDeletePost('${postDoc.id}', '${post.userId}')">🗑 Delete</button>` : '';
         const isOwnPost = post.userId === auth.currentUser.uid;
         const reportBtn = !isOwnPost ? `<button class="report-post-btn" onclick="openReportModal('${postDoc.id}', '${post.userId}', \`${escapeHtml(post.text || '').replace(/`/g,'')}\`)" title="Report post">🚩</button>` : '';
         const privacyBadge = post.isPrivate
@@ -829,6 +877,10 @@
             ? `<button class="edit-post-btn" onclick="toggleEditArea('${postDoc.id}')" title="Edit post">✏️ Edit</button>`
             : '';
 
+        // Admin badge on post
+        const isPostByAdmin = knownAdmins[post.userId] ? true : false;
+        const postAdminBadge = isPostByAdmin ? `<span class="admin-crown" style="font-size:11px;vertical-align:middle;margin-left:5px;">👑 Admin</span>` : '';
+
         // Render post text with clickable hashtags
         const postTextHtml = post.text ? `<div class="post-text">${renderPostText(post.text)}</div>` : '';
 
@@ -840,7 +892,7 @@
                 <div class="post-user-info">
                     <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${post.userInitial || 'U'}</div>
                     <div>
-                        <div class="post-user-name clickable-user" onclick="showProfile('${post.userId}')">${post.userName || 'User'}</div>
+                        <div class="post-user-name clickable-user" onclick="showProfile('${post.userId}')">${post.userName || 'User'}${postAdminBadge}</div>
                         <div class="post-time">${timeAgo}${editedTag} ${isOwnPost ? privacyBadge : ''}</div>
                     </div>
                 </div>
@@ -1222,7 +1274,7 @@
             container.innerHTML = '';
             comments.forEach(({ id, data: c }) => {
                 const timeAgo = c.createdAt ? getTimeAgo(c.createdAt.toDate()) : 'Just now';
-                const adminDel = isAdmin ? `<button class="comment-delete-btn" onclick="adminDeleteComment('${id}', '${postId}')">🗑 Delete</button>` : '';
+                const adminDel = (isAdmin && hasPerm('deleteComments')) ? `<button class="comment-delete-btn" onclick="adminDeleteComment('${id}', '${postId}')">🗑 Delete</button>` : '';
                 const el = document.createElement('div');
                 el.className = 'comment-item';
                 el.innerHTML = `<div class="comment-avatar clickable-user" onclick="showProfile('${c.userId}')">${c.userInitial || 'U'}</div><div class="comment-content"><div class="comment-header"><span class="comment-user clickable-user" onclick="showProfile('${c.userId}')">${c.userName || 'User'}</span><span class="comment-time">${timeAgo}</span></div><div class="comment-text">${escapeHtml(c.text)}</div>${adminDel}</div>`;
@@ -1300,6 +1352,7 @@
                 adminActions.style.display = 'flex';
                 adminBanBtn.textContent = u.banned ? '✅ Unban User' : '🚫 Ban User';
                 adminBanBtn.style.background = u.banned ? '#2ecc71' : '#ed4956';
+                adminBanBtn.style.display = hasPerm('banUsers') || hasPerm('tempBan') ? 'block' : 'none';
             } else {
                 adminActions.style.display = 'none';
             }
@@ -1401,6 +1454,7 @@
         if (event) event.currentTarget.classList.add('active');
         document.getElementById('adminSection' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
         if (tab === 'reports') loadAdminReports();
+        if (tab === 'admins') loadAdminsList();
     };
 
     async function loadAdminOverview() {
@@ -1477,6 +1531,7 @@
     };
 
     window.adminToggleBan = async (userId, isBanned) => {
+        if (!hasPerm('banUsers')) { alert('You do not have permission to permanently ban users.'); return; }
         const action = isBanned ? 'Unban' : 'Ban';
         if (!confirm(`${action} this user?`)) return;
         try {
@@ -1520,6 +1575,7 @@
     };
 
     window.postAnnouncement = async () => {
+        if (!hasPerm('announce')) { alert('You do not have permission to post announcements.'); return; }
         const text = document.getElementById('announceText').value.trim();
         if (!text) { alert('Write something first.'); return; }
         try {
@@ -1663,6 +1719,7 @@
     };
 
     async function applyTempBan(userId, hours) {
+        if (!hasPerm('tempBan') && !hasPerm('banUsers')) { alert('You do not have permission to temp ban users.'); return; }
         const until = new Date(Date.now() + hours * 60 * 60 * 1000);
         try { await updateDoc(doc(db, 'users', userId), { banned: false, tempBanned: true, bannedUntil: until.getTime(), bannedUntilDate: until.toISOString() }); }
         catch (e) { alert('Failed to temp ban: ' + e.message); }
@@ -1729,6 +1786,205 @@
         });
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── SUB-ADMIN SYSTEM ─────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    const ALL_PERMS = {
+        deletePosts:    '🗑 Delete Posts',
+        deleteComments: '💬 Delete Comments',
+        banUsers:       '🚫 Perm Ban Users',
+        tempBan:        '⏳ Temp Ban Users',
+        resolveReports: '🚨 Resolve Reports',
+        announce:       '📢 Announcements'
+    };
+
+    async function loadKnownAdmins() {
+        try {
+            knownAdmins = {};
+            knownAdmins[ADMIN_UID] = { displayName: 'Main Admin', isMain: true, permissions: {} };
+            const snap = await getDoc(doc(db, 'config', 'admins'));
+            if (snap.exists()) {
+                const data = snap.data();
+                Object.entries(data).forEach(([uid, info]) => { knownAdmins[uid] = info; });
+            }
+        } catch(e) { console.error('loadKnownAdmins:', e); }
+    }
+
+    function hasPerm(perm) {
+        if (isMainAdmin) return true;
+        return !!currentAdminPerms[perm];
+    }
+
+    window.loadAdminsList = async () => {
+        const list = document.getElementById('adminAdminsList');
+        if (!list) return;
+        list.innerHTML = '<div class="admin-empty">Loading...</div>';
+        try {
+            await loadKnownAdmins();
+            let html = '';
+            let mainName = 'Main Admin';
+            try { const d = await getDoc(doc(db, 'users', ADMIN_UID)); if(d.exists()) mainName = d.data().displayName; } catch(_){}
+            html += `<div class="sub-admin-card main">
+                <div>
+                    <div class="admin-user-name" style="color:white;">${escapeHtml(mainName)} <span class="admin-crown" style="font-size:11px;">👑 Main Admin</span></div>
+                    <div class="sub-admin-perms">${Object.entries(ALL_PERMS).map(([,label]) => `<span class="perm-tag">${label}</span>`).join('')}</div>
+                </div>
+                <span style="font-size:12px;color:rgba(255,255,255,0.3);">Full access</span>
+            </div>`;
+            const subSnap = await getDoc(doc(db, 'config', 'admins'));
+            const subAdmins = subSnap.exists() ? Object.entries(subSnap.data()) : [];
+            if (subAdmins.length > 0) {
+                for (const [uid, data] of subAdmins) {
+                    const perms = data.permissions || {};
+                    let uName = data.displayName || uid;
+                    try { const ud = await getDoc(doc(db, 'users', uid)); if(ud.exists()) uName = ud.data().displayName; } catch(_){}
+                    const permTags = Object.entries(ALL_PERMS)
+                        .filter(([key]) => perms[key])
+                        .map(([,label]) => `<span class="perm-tag">${label}</span>`)
+                        .join('') || '<span style="font-size:12px;color:rgba(255,255,255,0.3);">No permissions</span>';
+                    html += `<div class="sub-admin-card" id="subAdminCard_${uid}">
+                        <div style="flex:1;">
+                            <div class="admin-user-name" style="color:white;">${escapeHtml(uName)} <span class="admin-crown" style="font-size:11px;">👑 Sub-Admin</span></div>
+                            <div class="sub-admin-perms">${permTags}</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;margin-left:12px;">
+                            <button class="admin-action-btn btn-view" onclick="openEditSubAdmin('${uid}', '${escapeHtml(uName).replace(/'/g,"\'")}')">✏️ Edit</button>
+                            <button class="btn-remove-admin" onclick="revokeAdminAccess('${uid}', '${escapeHtml(uName).replace(/'/g,"\'")}')">✕ Revoke</button>
+                        </div>
+                    </div>`;
+                }
+            } else {
+                html += '<div class="admin-empty" style="padding:16px 0;">No sub-admins yet.</div>';
+            }
+            list.innerHTML = html;
+        } catch(e) { list.innerHTML = `<div class="admin-empty">Error: ${e.message}</div>`; }
+    };
+
+    window.searchAdminUserByName = async (query) => {
+        const results = document.getElementById('adminNameSearchResults');
+        if (!results) return;
+        const q = query.trim().toLowerCase();
+        if (q.length < 1) { results.innerHTML = ''; return; }
+        try {
+            const snap = await getDocs(collection(db, 'users'));
+            const matches = snap.docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .filter(u => u.displayName && u.displayName.toLowerCase().includes(q) && u.id !== ADMIN_UID);
+            if (matches.length === 0) {
+                results.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.3);padding:6px 0;">No users found.</div>';
+                return;
+            }
+            results.innerHTML = matches.slice(0, 5).map(u => `
+                <div onclick="selectAdminUser('${u.id}', '${escapeHtml(u.displayName).replace(/'/g,"\'")}', this)"
+                     style="background:rgba(255,255,255,0.06);border-radius:8px;padding:10px 14px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background 0.15s;"
+                     onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:white;">${escapeHtml(u.displayName)}</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.4);">${escapeHtml(u.email || '')}</div>
+                    </div>
+                    <span style="font-size:11px;color:rgba(255,255,255,0.3);">Select</span>
+                </div>`).join('');
+        } catch(e) { results.innerHTML = '<div style="font-size:12px;color:#ed4956;">Error: ' + e.message + '</div>'; }
+    };
+
+    window.selectAdminUser = (uid, name, el) => {
+        document.getElementById('newAdminUidInput').value = uid;
+        document.getElementById('newAdminNameInput').value = name;
+        // Highlight selected
+        document.querySelectorAll('#adminNameSearchResults > div').forEach(d => d.style.background = 'rgba(255,255,255,0.06)');
+        el.style.background = 'rgba(247,183,51,0.2)';
+        el.style.border = '1px solid rgba(247,183,51,0.4)';
+        el.querySelector('span').textContent = '✓ Selected';
+        el.querySelector('span').style.color = '#f7b733';
+    };
+
+        window.grantAdminAccess = async () => {
+        const uid = document.getElementById('newAdminUidInput').value.trim();
+        if (!uid) { alert('Please select a user from the search results first.'); return; }
+        if (uid === ADMIN_UID) { alert('That is already the main admin!'); return; }
+        let displayName = uid;
+        try {
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            if (!userDoc.exists()) { alert('No user found with that UID.'); return; }
+            displayName = userDoc.data().displayName;
+        } catch(e) { alert('Error: ' + e.message); return; }
+        const perms = {
+            deletePosts:    document.getElementById('perm_deletePosts').checked,
+            deleteComments: document.getElementById('perm_deleteComments').checked,
+            banUsers:       document.getElementById('perm_banUsers').checked,
+            tempBan:        document.getElementById('perm_tempBan').checked,
+            resolveReports: document.getElementById('perm_resolveReports').checked,
+            announce:       document.getElementById('perm_announce').checked
+        };
+        if (!confirm('Grant admin access to "' + displayName + '"?')) return;
+        try {
+            const adminsRef = doc(db, 'config', 'admins');
+            const adminsSnap = await getDoc(adminsRef);
+            const adminsData = adminsSnap.exists() ? adminsSnap.data() : {};
+            adminsData[uid] = { displayName, permissions: perms, grantedAt: Date.now(), grantedBy: ADMIN_UID };
+            await setDoc(adminsRef, adminsData);
+            addAdminLog('Granted admin to ' + displayName + ' (' + uid + ')');
+            document.getElementById('newAdminUidInput').value = '';
+            document.getElementById('newAdminNameInput').value = '';
+            document.getElementById('adminNameSearchResults').innerHTML = '';
+            await loadKnownAdmins();
+            loadAdminsList();
+            alert('✅ ' + displayName + ' is now a sub-admin!');
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    window.revokeAdminAccess = async (uid, name) => {
+        if (!confirm('Revoke admin access from "' + name + '"?')) return;
+        try {
+            const revokeRef = doc(db, 'config', 'admins');
+            const revokeSnap = await getDoc(revokeRef);
+            if (revokeSnap.exists()) {
+                const d = revokeSnap.data();
+                delete d[uid];
+                await setDoc(revokeRef, d);
+            }
+            addAdminLog('Revoked admin from ' + name + ' (' + uid + ')');
+            await loadKnownAdmins();
+            loadAdminsList();
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    window.openEditSubAdmin = async (uid, name) => {
+        try {
+            const adminsDoc = await getDoc(doc(db, 'config', 'admins'));
+            const allAdmins = adminsDoc.exists() ? adminsDoc.data() : {};
+            if (!allAdmins[uid]) { alert('Admin not found'); return; }
+            const perms = allAdmins[uid].permissions || {};
+            const card = document.getElementById('subAdminCard_' + uid);
+            if (!card) return;
+            let innerHtml = '<div style="width:100%;"><div class="admin-user-name" style="color:white;margin-bottom:12px;">✏️ Editing: ' + escapeHtml(name) + '</div><div class="perm-grid">';
+            Object.entries(ALL_PERMS).forEach(([key, label]) => {
+                innerHtml += '<div class="perm-item"><input type="checkbox" id="editPerm_' + uid + '_' + key + '" ' + (perms[key] ? 'checked' : '') + '><label for="editPerm_' + uid + '_' + key + '">' + label + '</label></div>';
+            });
+            innerHtml += '</div><div style="display:flex;gap:8px;margin-top:10px;"><button class="edit-save-btn" onclick="saveSubAdminPerms(\'' + uid + '\', \'' + escapeHtml(name).replace(/\'/g, "\\'") + '\')">💾 Save</button><button class="edit-cancel-btn" onclick="loadAdminsList()">Cancel</button></div></div>';
+            card.innerHTML = innerHtml;
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    window.saveSubAdminPerms = async (uid, name) => {
+        const newPerms = {};
+        Object.keys(ALL_PERMS).forEach(key => {
+            const el = document.getElementById('editPerm_' + uid + '_' + key);
+            if (el) newPerms[key] = el.checked;
+        });
+        try {
+            const saveRef = doc(db, 'config', 'admins');
+            const saveSnap = await getDoc(saveRef);
+            const saveData = saveSnap.exists() ? saveSnap.data() : {};
+            if (saveData[uid]) saveData[uid].permissions = newPerms;
+            await setDoc(saveRef, saveData);
+            addAdminLog('Updated permissions for ' + name + ' (' + uid + ')');
+            await loadKnownAdmins();
+            loadAdminsList();
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
     // ── Auth state ────────────────────────────────────────────────────────────
 
     onAuthStateChanged(auth, async (user) => {
@@ -1766,9 +2022,32 @@
             }
 
             currentUserData = userData;
-            isAdmin = user.uid === ADMIN_UID;
+            isMainAdmin = user.uid === ADMIN_UID;
+            isAdmin = isMainAdmin;
 
-            if (isAdmin) { showAdminUI(); listenReportsBadge(); } else { hideAdminUI(); }
+            // Check if this user is a sub-admin
+            if (!isMainAdmin) {
+                try {
+                    const adminsDoc = await getDoc(doc(db, 'config', 'admins'));
+                    if (adminsDoc.exists() && adminsDoc.data()[user.uid]) {
+                        isAdmin = true;
+                        currentAdminPerms = adminsDoc.data()[user.uid].permissions || {};
+                    }
+                } catch(_) {}
+            } else {
+                currentAdminPerms = { deletePosts: true, deleteComments: true, banUsers: true, tempBan: true, resolveReports: true, announce: true };
+            }
+
+            if (isAdmin) {
+                showAdminUI();
+                listenReportsBadge();
+                if (isMainAdmin) {
+                    document.getElementById('adminTabAdmins').style.display = 'block';
+                }
+            } else { hideAdminUI(); }
+
+            // Load admin roster for badge rendering
+            await loadKnownAdmins();
 
             const initial = userData.displayName.charAt(0).toUpperCase();
             document.getElementById('headerAvatar').textContent = initial;
