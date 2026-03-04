@@ -2027,7 +2027,7 @@
 
             const matchUsers = usersSnap.docs
                 .map(d => ({ id: d.id, ...d.data() }))
-                .filter(u => (u.displayName || '').toLowerCase().includes(q));
+                .filter(u => (u.displayName || '').toLowerCase().includes(q) && !u.banned && !u.tempBanned);
 
             const matchPosts = postsSnap.docs
                 .map(d => ({ id: d.id, ...d.data() }))
@@ -2216,7 +2216,7 @@
         const snap = await getDocs(collection(db, 'users'));
         const q = query.toLowerCase();
         const matches = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-            .filter(u => (u.displayName||'').toLowerCase().startsWith(q) && u.id !== auth.currentUser.uid)
+            .filter(u => (u.displayName||'').toLowerCase().startsWith(q) && u.id !== auth.currentUser.uid && !u.banned && !u.tempBanned)
             .slice(0, 5);
         if (!matches.length) return;
 
@@ -2282,7 +2282,7 @@
         // Load users
         const snap = await getDocs(collection(db, 'users'));
         shareAllUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-            .filter(u => u.id !== auth.currentUser.uid);
+            .filter(u => u.id !== auth.currentUser.uid && !u.banned && !u.tempBanned);
         // Load current sharedWith
         const postDoc = await getDoc(doc(db, 'posts', postId));
         const current = postDoc.exists() ? (postDoc.data().sharedWith || []) : [];
@@ -2412,7 +2412,7 @@
             const snap = await getDocs(collection(db, 'users'));
             const matches = snap.docs
                 .map(d => ({ id: d.id, ...d.data() }))
-                .filter(u => u.displayName && u.displayName.toLowerCase().includes(q) && u.id !== ADMIN_UID);
+                .filter(u => u.displayName && u.displayName.toLowerCase().includes(q) && u.id !== ADMIN_UID && !u.banned);
             if (matches.length === 0) {
                 results.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.3);padding:6px 0;">No users found.</div>';
                 return;
