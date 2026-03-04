@@ -945,7 +945,9 @@
                 likesCount: 0,
                 commentsCount: 0,
                 isPrivate: isPrivatePost,
-                hashtags,          // ← stored array of tags
+                // visibleTo: always starts as just the owner. Share modal adds more UIDs.
+                visibleTo: [auth.currentUser.uid],
+                hashtags,
                 createdAt: serverTimestamp()
             });
             await updateDoc(doc(db, 'users', auth.currentUser.uid), { postsCount: increment(1) });
@@ -1123,8 +1125,7 @@
                 let hasVisible = false;
                 matchingDocs.forEach((postDoc) => {
                     const post = postDoc.data();
-                    const isSharedWithMe = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
-                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
+                    if (!canSeePost(post)) return;
                     hasVisible = true;
                     const el = document.createElement('div');
                     el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -1177,8 +1178,7 @@
                     let hasVisible = false;
                     snapshot.forEach((postDoc) => {
                         const post = postDoc.data();
-                        const isSharedWithMe = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
-                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
+                        if (!canSeePost(post)) return;
                         hasVisible = true;
                         const el = document.createElement('div');
                         el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -1198,7 +1198,19 @@
 
     // ── FOR YOU FEED (all posts) ───────────────────────────────────────────────
 
-    function loadPosts() {
+    // Single source of truth for post visibility
+    function canSeePost(post) {
+        if (!post.isPrivate) return true;
+        if (isAdmin) return true;
+        if (!auth.currentUser) return false;
+        if (post.userId === auth.currentUser.uid) return true;
+        // visibleTo lists every UID allowed to see this post
+        // Falls back to owner-only if field missing (old posts)
+        const allowed = post.visibleTo || [post.userId];
+        return allowed.includes(auth.currentUser.uid);
+    }
+
+        function loadPosts() {
         if (unsubscribeFeed) { unsubscribeFeed(); unsubscribeFeed = null; }
         unsubscribeFeed = onSnapshot(
             query(collection(db, 'posts'), orderBy('createdAt', 'desc')),
@@ -1213,8 +1225,7 @@
                 let hasVisible = false;
                 snapshot.forEach((postDoc) => {
                     const post = postDoc.data();
-                    const isSharedWithMe = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
-                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
+                    if (!canSeePost(post)) return;
                     hasVisible = true;
                     const el = document.createElement('div');
                     el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -1590,8 +1601,7 @@
             let hasVisible = false;
             snapshot.forEach((pd) => {
                 const post = pd.data();
-                const isSharedWithMe2 = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
-                if (post.isPrivate && !isOwnProfile && !isAdmin && !isSharedWithMe2) return;
+                if (!canSeePost(post)) return;
                 hasVisible = true;
                 const el = document.createElement('div');
                 el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -2287,9 +2297,11 @@
         const snap = await getDocs(collection(db, 'users'));
         shareAllUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }))
             .filter(u => u.id !== auth.currentUser.uid && !u.banned && !u.tempBanned);
-        // Load current sharedWith
-        const postDoc = await getDoc(doc(db, 'posts', postId));
-        const current = postDoc.exists() ? (postDoc.data().sharedWith || []) : []; // now stores UIDs
+        // Load currently visible UIDs (excluding the owner themselves)
+        const postDocSnap = await getDoc(doc(db, 'posts', postId));
+        const postData = postDocSnap.exists() ? postDocSnap.data() : {};
+        const ownerUid = postData.userId || auth.currentUser.uid;
+        const current = (postData.visibleTo || [ownerUid]).filter(uid => uid !== ownerUid);
         renderShareUserList(shareAllUsers, current);
     };
 
@@ -2319,12 +2331,20 @@
             const el = document.getElementById('shareCheck_' + u.id);
             return el && el.checked;
         });
-        const uids = checked.map(u => u.id);
-        const names = checked.map(u => u.displayName);
+        const selectedUids = checked.map(u => u.id);
+        const selectedNames = checked.map(u => u.displayName);
         try {
-            await updateDoc(doc(db, 'posts', sharePostId), { sharedWith: uids, sharedWithNames: names });
+            // Get the post owner UID so they're always in visibleTo
+            const postSnap = await getDoc(doc(db, 'posts', sharePostId));
+            const ownerUid = postSnap.exists() ? postSnap.data().userId : auth.currentUser.uid;
+            // visibleTo = owner + all selected users (owner always included)
+            const visibleTo = [ownerUid, ...selectedUids.filter(uid => uid !== ownerUid)];
+            await updateDoc(doc(db, 'posts', sharePostId), {
+                visibleTo,
+                sharedWithNames: selectedNames
+            });
             closeShareModal();
-        } catch(e) { alert('Failed: ' + e.message); }
+        } catch(e) { alert('Failed to save: ' + e.message); }
     };
 
     window.closeShareModal = () => {
