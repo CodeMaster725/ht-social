@@ -1123,7 +1123,8 @@
                 let hasVisible = false;
                 matchingDocs.forEach((postDoc) => {
                     const post = postDoc.data();
-                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin) return;
+                    const isSharedWithMe = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
                     hasVisible = true;
                     const el = document.createElement('div');
                     el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -1176,7 +1177,8 @@
                     let hasVisible = false;
                     snapshot.forEach((postDoc) => {
                         const post = postDoc.data();
-                        if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin) return;
+                        const isSharedWithMe = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
                         hasVisible = true;
                         const el = document.createElement('div');
                         el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -1211,7 +1213,8 @@
                 let hasVisible = false;
                 snapshot.forEach((postDoc) => {
                     const post = postDoc.data();
-                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin) return;
+                    const isSharedWithMe = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                    if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
                     hasVisible = true;
                     const el = document.createElement('div');
                     el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -1587,7 +1590,8 @@
             let hasVisible = false;
             snapshot.forEach((pd) => {
                 const post = pd.data();
-                if (post.isPrivate && !isOwnProfile && !isAdmin) return;
+                const isSharedWithMe2 = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                if (post.isPrivate && !isOwnProfile && !isAdmin && !isSharedWithMe2) return;
                 hasVisible = true;
                 const el = document.createElement('div');
                 el.className = 'post' + (post.isPrivate ? ' private-post' : '');
