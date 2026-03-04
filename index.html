@@ -6,14 +6,26 @@
     <title>HT Social</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #fafafa; }
+
+        /* ── DARK MODE CSS VARS ── */
+        :root {
+            --bg: #fafafa; --surface: white; --border: #dbdbdb; --text: #262626;
+            --text-sub: #8e8e8e; --input-bg: #fafafa; --hover: #fafafa;
+            --post-private-bg: #fafbff; --post-private-border: #c5ceff;
+        }
+        body.dark {
+            --bg: #0d0d0d; --surface: #1a1a1a; --border: #2e2e2e; --text: #e8e8e8;
+            --text-sub: #888; --input-bg: #222; --hover: #222;
+            --post-private-bg: #12122a; --post-private-border: #334;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); transition: background 0.2s, color 0.2s; }
 
         .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
         .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); width: 400px; max-width: 100%; text-align: center; }
         .login-logo { font-size: 56px; margin-bottom: 16px; }
         .login-box h1 { color: #262626; margin-bottom: 8px; font-size: 32px; font-weight: 600; }
         .login-box p { color: #8e8e8e; margin-bottom: 32px; font-size: 16px; }
-        .login-box input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #dbdbdb; border-radius: 6px; font-size: 14px; background: #fafafa; }
+        .login-box input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #dbdbdb; border-radius: 6px; font-size: 14px; background: var(--bg); }
         .login-box input:focus { outline: none; border-color: #667eea; background: white; }
         .login-box button { width: 100%; padding: 12px; margin: 12px 0; background: #667eea; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .login-box button:hover { background: #5568d3; }
@@ -23,15 +35,15 @@
         .main-container { display: none; min-height: 100vh; }
         .main-container.active { display: block; }
 
-        .header { background: white; border-bottom: 1px solid #dbdbdb; padding: 12px 0; position: sticky; top: 0; z-index: 100; }
+        .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 0; position: sticky; top: 0; z-index: 100; }
         .header-content { max-width: 975px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
         .logo { font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: #262626; }
         .logo-icon { font-size: 32px; }
         .search-bar { flex: 1; max-width: 268px; margin: 0 32px; }
-        .search-input { width: 100%; padding: 8px 16px; border: 1px solid #dbdbdb; border-radius: 8px; font-size: 14px; background: #fafafa; }
-        .search-input:focus { outline: none; background: white; }
+        .search-input { width: 100%; padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--input-bg); color: var(--text); }
+        .search-input:focus { outline: none; background: var(--surface); }
         .header-icons { display: flex; gap: 20px; align-items: center; }
-        .icon-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #262626; padding: 4px; }
+        .icon-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text); padding: 4px; }
         .icon-btn:hover { opacity: 0.6; }
         .icon-btn-wrapper { position: relative; }
         .notification-badge { position: absolute; top: -4px; right: -4px; background: #ed4956; color: white; border-radius: 10px; padding: 2px 6px; font-size: 11px; font-weight: 600; min-width: 18px; text-align: center; }
@@ -167,8 +179,8 @@
         .reports-badge { position: absolute; top: -4px; right: -4px; background: #fc4a1a; color: white; border-radius: 10px; padding: 2px 5px; font-size: 10px; font-weight: 700; min-width: 16px; text-align: center; display: none; }
 
         /* ── FEED TABS ── */
-        .feed-tabs { display: flex; background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 6px; margin-bottom: 20px; gap: 4px; }
-        .feed-tab-btn { flex: 1; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; color: #8e8e8e; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .feed-tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 6px; margin-bottom: 20px; gap: 4px; }
+        .feed-tab-btn { flex: 1; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text-sub); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .feed-tab-btn:hover { background: #f5f5f5; color: #262626; }
         .feed-tab-btn.active { background: #667eea; color: white; box-shadow: 0 2px 8px rgba(102,126,234,0.4); }
 
@@ -189,8 +201,8 @@
         .hashtag-chip { background: #f0f4ff; color: #667eea; border: 1px solid #c5ceff; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
 
         /* ── TRENDING HASHTAGS SIDEBAR ── */
-        .trending-section { background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
-        .trending-section h4 { font-size: 14px; font-weight: 700; color: #262626; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+        .trending-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+        .trending-section h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
         .trending-tag { display: flex; align-items: center; justify-content: space-between; padding: 9px 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; }
         .trending-tag:hover { background: #f5f7ff; }
         .trending-tag:last-child { margin-bottom: 0; }
@@ -198,15 +210,16 @@
         .trending-tag-rank { font-size: 12px; font-weight: 700; color: #b2b2b2; width: 16px; text-align: center; }
         .trending-tag-rank.top { color: #f7b733; }
         .trending-tag-name { font-size: 14px; font-weight: 600; color: #667eea; }
+        body.dark .trending-tag:hover { background: #1e1e2e; }
         .trending-tag-count { font-size: 12px; color: #8e8e8e; background: #f5f5f5; padding: 2px 8px; border-radius: 10px; }
         .trending-empty { font-size: 12px; color: #8e8e8e; text-align: center; padding: 12px 0; }
         .trending-refresh { background: none; border: none; cursor: pointer; font-size: 12px; color: #8e8e8e; padding: 2px 6px; border-radius: 4px; }
         .trending-refresh:hover { background: #f5f5f5; color: #262626; }
 
         /* ── NOTIFICATIONS ── */
-        .notifications-panel { position: fixed; top: 60px; right: 20px; width: 400px; max-width: calc(100vw - 40px); max-height: 500px; background: white; border: 1px solid #dbdbdb; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1000; }
+        .notifications-panel { position: fixed; top: 60px; right: 20px; width: 400px; max-width: calc(100vw - 40px); max-height: 500px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1000; }
         .notifications-panel.active { display: flex; }
-        .notifications-header { padding: 16px; border-bottom: 1px solid #efefef; display: flex; justify-content: space-between; align-items: center; }
+        .notifications-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .notifications-header h3 { font-size: 16px; font-weight: 600; color: #262626; }
         .notifications-body { overflow-y: auto; flex: 1; }
         .notification-item { padding: 12px 16px; border-bottom: 1px solid #efefef; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: background 0.2s; }
@@ -223,7 +236,7 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.65); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .comments-modal { background: white; border-radius: 12px; width: 100%; max-width: 600px; max-height: 90vh; display: flex; flex-direction: column; }
+        .comments-modal { background: var(--surface); border-radius: 12px; width: 100%; max-width: 600px; max-height: 90vh; display: flex; flex-direction: column; }
         .comments-header { padding: 16px 20px; border-bottom: 1px solid #efefef; display: flex; justify-content: space-between; align-items: center; }
         .comments-header h3 { font-size: 18px; font-weight: 600; color: #262626; }
         .close-modal-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: #262626; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
@@ -233,13 +246,13 @@
         .comment-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; flex-shrink: 0; }
         .comment-content { flex: 1; }
         .comment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .comment-user { font-size: 14px; font-weight: 600; color: #262626; }
+        .comment-user { font-size: 14px; font-weight: 600; color: var(--text); }
         .comment-time { font-size: 12px; color: #8e8e8e; }
-        .comment-text { font-size: 14px; color: #262626; line-height: 1.4; word-wrap: break-word; }
+        .comment-text { font-size: 14px; color: var(--text); line-height: 1.4; word-wrap: break-word; }
         .comment-delete-btn { background: none; border: none; color: #ed4956; cursor: pointer; font-size: 12px; padding: 4px 8px; margin-top: 4px; border-radius: 4px; }
         .comment-delete-btn:hover { background: #fef5f6; }
         .comments-input-container { padding: 16px 20px; border-top: 1px solid #efefef; display: flex; gap: 12px; align-items: center; }
-        .comments-input { flex: 1; border: 1px solid #dbdbdb; border-radius: 24px; padding: 10px 16px; font-size: 14px; resize: none; font-family: inherit; max-height: 100px; }
+        .comments-input { flex: 1; border: 1px solid var(--border); border-radius: 24px; padding: 10px 16px; font-size: 14px; resize: none; font-family: inherit; max-height: 100px; background: var(--input-bg); color: var(--text); }
         .comments-input:focus { outline: none; border-color: #667eea; }
         .send-comment-btn { background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 24px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s; }
         .send-comment-btn:hover { background: #5568d3; }
@@ -250,11 +263,11 @@
 
         .content { max-width: 975px; margin: 32px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 320px; gap: 32px; }
         .feed { max-width: 614px; }
-        .create-post { background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+        .create-post { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
         .create-post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; }
-        .create-post-input { width: 100%; border: none; outline: none; font-size: 16px; resize: none; font-family: inherit; min-height: 60px; }
-        .create-post-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #efefef; }
+        .create-post-input { width: 100%; border: none; outline: none; font-size: 16px; resize: none; font-family: inherit; min-height: 60px; background: transparent; color: var(--text); }
+        .create-post-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
         .post-action-btns { display: flex; gap: 12px; }
         .action-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 8px; border-radius: 8px; }
         .action-btn:hover { background: #fafafa; }
@@ -265,20 +278,20 @@
         .image-preview { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; }
         .remove-image-btn { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 20px; }
 
-        .post { background: white; border: 1px solid #dbdbdb; border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
+        .post { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
         .post-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
         .post-user-info { display: flex; align-items: center; gap: 12px; }
-        .post-user-name { font-weight: 600; font-size: 14px; color: #262626; }
-        .post-time { font-size: 12px; color: #8e8e8e; }
+        .post-user-name { font-weight: 600; font-size: 14px; color: var(--text); }
+        .post-time { font-size: 12px; color: var(--text-sub); }
         .post-menu-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #262626; padding: 4px 8px; }
         .post-image { width: 100%; max-height: 600px; object-fit: cover; }
         .post-content { padding: 16px; }
-        .post-actions { display: flex; gap: 16px; padding: 8px 16px; border-top: 1px solid #efefef; }
-        .post-action { display: flex; align-items: center; gap: 6px; background: none; border: none; font-size: 20px; cursor: pointer; color: #262626; padding: 8px 12px; border-radius: 8px; }
+        .post-actions { display: flex; gap: 16px; padding: 8px 16px; border-top: 1px solid var(--border); }
+        .post-action { display: flex; align-items: center; gap: 6px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text); padding: 8px 12px; border-radius: 8px; }
         .post-action:hover { background: #fafafa; }
         .post-action.liked { color: #ed4956; }
         .post-action-count { font-size: 14px; font-weight: 600; }
-        .post-text { font-size: 14px; line-height: 1.5; color: #262626; }
+        .post-text { font-size: 14px; line-height: 1.5; color: var(--text); }
         .admin-delete-post-btn { background: #ed4956; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .admin-delete-post-btn:hover { background: #c92a39; }
 
@@ -305,21 +318,21 @@
         .privacy-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
         .privacy-badge.private { background: #f0f4ff; color: #667eea; }
         .privacy-badge.public { background: #f0fff4; color: #27ae60; }
-        .post.private-post { border-color: #c5ceff; background: #fafbff; }
+        .post.private-post { border-color: var(--post-private-border); background: var(--post-private-bg); }
         .post.private-post .post-header { background: linear-gradient(to right, #f0f4ff, white); }
 
         .sidebar { position: sticky; top: 92px; align-self: start; }
-        .profile-card { background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+        .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
         .profile-info { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
         .profile-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 24px; }
-        .profile-details h3 { font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 4px; }
+        .profile-details h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
         .profile-details p { font-size: 14px; color: #8e8e8e; }
-        .profile-stats { display: flex; justify-content: space-around; padding-top: 16px; border-top: 1px solid #efefef; }
+        .profile-stats { display: flex; justify-content: space-around; padding-top: 16px; border-top: 1px solid var(--border); }
         .stat { text-align: center; }
-        .stat-number { font-size: 18px; font-weight: 600; color: #262626; display: block; }
+        .stat-number { font-size: 18px; font-weight: 600; color: var(--text); display: block; }
         .stat-label { font-size: 12px; color: #8e8e8e; }
-        .suggestions { background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 16px; }
-        .suggestions h4 { font-size: 14px; font-weight: 600; color: #262626; margin-bottom: 16px; }
+        .suggestions { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+        .suggestions h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
         .logout-btn { width: 100%; background: #ed4956; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 16px; font-size: 14px; }
         .logout-btn:hover { background: #c92a39; }
         .admin-panel-btn { width: 100%; background: linear-gradient(135deg, #f7b733, #fc4a1a); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 14px; }
@@ -332,12 +345,12 @@
 
         .profile-page { display: none; max-width: 975px; margin: 32px auto; padding: 0 20px; }
         .profile-page.active { display: block; }
-        .profile-header { background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 32px; margin-bottom: 24px; }
+        .profile-header { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin-bottom: 24px; }
         .profile-header-content { display: flex; align-items: center; gap: 32px; margin-bottom: 24px; }
         .profile-large-avatar { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 48px; flex-shrink: 0; }
         .profile-header-info { flex: 1; }
         .profile-header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-        .profile-username { font-size: 28px; font-weight: 600; color: #262626; }
+        .profile-username { font-size: 28px; font-weight: 600; color: var(--text); }
         .follow-btn-large { background: #667eea; color: white; border: none; padding: 8px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; }
         .follow-btn-large:hover { background: #5568d3; }
         .follow-btn-large.following { background: #efefef; color: #262626; }
@@ -348,7 +361,7 @@
         .profile-stats-large .stat { text-align: left; }
         .profile-stats-large .stat-number { font-size: 20px; margin-right: 4px; }
         .profile-stats-large .stat-label { font-size: 16px; color: #262626; }
-        .profile-bio { font-size: 14px; color: #262626; line-height: 1.5; }
+        .profile-bio { font-size: 14px; color: var(--text); line-height: 1.5; }
         .profile-posts-header { display: flex; justify-content: center; padding: 16px 0; border-top: 1px solid #dbdbdb; margin-top: 24px; }
         .profile-posts-header span { font-size: 14px; font-weight: 600; color: #262626; display: flex; align-items: center; gap: 6px; }
         .clickable-user { cursor: pointer; }
@@ -359,6 +372,79 @@
 
         @media (max-width: 1024px) { .content { grid-template-columns: 1fr; } .sidebar { display: none; } .feed { max-width: 100%; } }
         @media (max-width: 768px) { .search-bar { display: none; } .admin-stat-grid { grid-template-columns: repeat(2,1fr); } }
+
+        /* ── DARK MODE TOGGLE ── */
+        .dark-toggle { background: none; border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; cursor: pointer; font-size: 16px; color: var(--text); transition: all 0.2s; }
+        .dark-toggle:hover { background: var(--hover); }
+
+        /* ── ONLINE INDICATOR ── */
+        .online-dot { width: 10px; height: 10px; background: #2ecc71; border-radius: 50%; border: 2px solid var(--surface); position: absolute; bottom: 0; right: 0; }
+        .avatar-wrap { position: relative; display: inline-flex; flex-shrink: 0; }
+
+        /* ── SEARCH RESULTS DROPDOWN ── */
+        .search-results-dropdown { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 500; max-height: 400px; overflow-y: auto; }
+        .search-result-item { padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border); }
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background: var(--hover); }
+        .search-result-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; flex-shrink: 0; }
+        .search-result-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .search-result-sub { font-size: 12px; color: var(--text-sub); }
+        .search-result-post { font-size: 13px; color: var(--text); }
+        .search-result-post-meta { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .search-section-label { padding: 8px 16px 4px; font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; background: var(--hover); }
+        .search-no-results { padding: 24px; text-align: center; color: var(--text-sub); font-size: 14px; }
+        .search-bar { position: relative; }
+
+        /* ── USER BIO ── */
+        .bio-edit-area { margin-top: 8px; }
+        .bio-textarea { width: 100%; border: 1.5px solid #667eea; border-radius: 8px; padding: 10px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 60px; max-height: 120px; outline: none; background: var(--input-bg); color: var(--text); }
+        .bio-char-count { font-size: 11px; color: var(--text-sub); text-align: right; margin-top: 4px; }
+        .bio-save-btn { background: #667eea; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+        .bio-cancel-btn { background: var(--hover); color: var(--text); border: 1px solid var(--border); padding: 7px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px; margin-left: 6px; }
+        .edit-bio-btn { background: none; border: 1px solid var(--border); color: var(--text-sub); padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; margin-top: 6px; }
+        .edit-bio-btn:hover { border-color: #667eea; color: #667eea; }
+
+        /* ── PINNED POST ── */
+        .pinned-badge { background: #fff3cd; color: #856404; border: 1px solid #ffc107; border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+        body.dark .pinned-badge { background: #2a2000; color: #ffc107; border-color: #5a4000; }
+        .pin-post-btn { background: none; border: none; color: var(--text-sub); cursor: pointer; font-size: 12px; padding: 6px 10px; border-radius: 6px; transition: all 0.2s; }
+        .pin-post-btn:hover { background: #fff3cd; color: #856404; }
+        .post.pinned-post { border-color: #ffc107; }
+        body.dark .post.pinned-post { border-color: #5a4000; }
+
+        /* ── COMMENT REPLIES ── */
+        .reply-btn { background: none; border: none; color: #667eea; font-size: 12px; cursor: pointer; padding: 2px 6px; font-weight: 600; }
+        .reply-btn:hover { text-decoration: underline; }
+        .replies-container { margin-left: 48px; margin-top: 8px; border-left: 2px solid var(--border); padding-left: 12px; }
+        .reply-item { display: flex; gap: 10px; margin-bottom: 12px; }
+        .reply-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 11px; flex-shrink: 0; }
+        .reply-input-area { margin-left: 48px; margin-top: 6px; display: none; gap: 8px; align-items: center; }
+        .reply-input-area.active { display: flex; }
+        .reply-input { flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 13px; font-family: inherit; outline: none; background: var(--input-bg); color: var(--text); }
+        .reply-input:focus { border-color: #667eea; }
+        .reply-send-btn { background: #667eea; color: white; border: none; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+        /* ── @MENTIONS ── */
+        .mention { color: #667eea; font-weight: 600; cursor: pointer; }
+        .mention:hover { text-decoration: underline; }
+        .mention-dropdown { position: absolute; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 600; width: 220px; max-height: 200px; overflow-y: auto; }
+        .mention-item { padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text); }
+        .mention-item:hover { background: var(--hover); }
+        .mention-item-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0; }
+
+        /* ── SHARED WITH ── */
+        .shared-with-section { padding: 8px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-sub); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .shared-chip { background: var(--hover); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; font-size: 12px; color: var(--text); display: inline-flex; align-items: center; gap: 4px; }
+        .share-modal-inner { background: var(--surface); border-radius: 12px; width: 100%; max-width: 420px; padding: 24px; }
+        .share-modal-inner h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .share-search-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--input-bg); color: var(--text); outline: none; margin: 12px 0; }
+        .share-search-input:focus { border-color: #667eea; }
+        .share-user-list { max-height: 220px; overflow-y: auto; margin-bottom: 14px; }
+        .share-user-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+        .share-user-item:hover { background: var(--hover); }
+        .share-user-item input[type=checkbox] { width: 16px; height: 16px; accent-color: #667eea; }
+        .share-confirm-btn { width: 100%; background: #667eea; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .share-cancel-btn { width: 100%; background: transparent; color: var(--text-sub); border: none; padding: 10px; font-size: 14px; cursor: pointer; margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -384,6 +470,18 @@
         </div>
         <button class="report-submit-btn" id="reportSubmitBtn" onclick="submitReport()" disabled>Submit Report</button>
         <button class="report-cancel-btn" onclick="closeReportModal()">Cancel</button>
+    </div>
+</div>
+
+<!-- SHARE PRIVATE POST MODAL -->
+<div class="modal-overlay" id="shareModal" onclick="closeShareIfOutside(event)">
+    <div class="share-modal-inner" onclick="event.stopPropagation()">
+        <h3>🔒 Share with People</h3>
+        <p style="font-size:13px;color:var(--text-sub);margin-bottom:4px;">Choose who can see this private post</p>
+        <input type="text" class="share-search-input" id="shareSearchInput" placeholder="Search by name..." oninput="filterShareUsers(this.value)">
+        <div class="share-user-list" id="shareUserList"></div>
+        <button class="share-confirm-btn" onclick="confirmShare()">✓ Update Sharing</button>
+        <button class="share-cancel-btn" onclick="closeShareModal()">Cancel</button>
     </div>
 </div>
 
@@ -418,10 +516,12 @@
                 <span>HT Social</span>
             </div>
             <div class="search-bar">
-                <input type="text" class="search-input" placeholder="Search">
+                <input type="text" class="search-input" id="mainSearchInput" placeholder="🔍 Search posts & people..." oninput="handleSearch(this.value)" autocomplete="off">
+                <div class="search-results-dropdown" id="searchDropdown" style="display:none;"></div>
             </div>
             <div class="header-icons">
                 <button class="icon-btn" onclick="scrollToTop()">🏠</button>
+                <button class="dark-toggle" id="darkToggleBtn" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
                 <button class="icon-btn" onclick="window.location.href='https://codemaster725.github.io/ht-messages/'">💬</button>
                 <div class="icon-btn-wrapper">
                     <button class="icon-btn" onclick="toggleNotifications()">🔔</button>
@@ -554,7 +654,9 @@
                         <div class="stat clickable-user" onclick="showFollowers()"><span class="stat-number" id="profilePageFollowersCount">0</span><span class="stat-label">followers</span></div>
                         <div class="stat clickable-user" onclick="showFollowing()"><span class="stat-number" id="profilePageFollowingCount">0</span><span class="stat-label">following</span></div>
                     </div>
-                    <div class="profile-bio" id="profilePagePhone"></div>
+                    <div class="profile-bio" id="profilePageBio" style="margin-bottom:4px;"></div>
+                    <div id="bioEditContainer"></div>
+                    <div class="profile-bio" id="profilePagePhone" style="color:var(--text-sub);font-size:12px;"></div>
                     <div class="admin-profile-actions" id="adminProfileActions" style="display:none;">
                         <button class="admin-profile-ban-btn" id="adminProfileBanBtn" onclick="adminToggleBanFromProfile()">🚫 Ban User</button>
                         <button class="admin-profile-nuke-btn" onclick="adminDeleteAllPostsFromProfile()">💣 Delete All Posts</button>
@@ -696,17 +798,26 @@
         return d.innerHTML.replace(/\n/g, '<br>');
     }
 
-    // Render post text with clickable hashtags (multi-word support)
+    // Render post text: @mentions + hashtags
     function renderPostText(text) {
-        // Split on # — everything after each # until the next # is a tag
-        const parts = text.split('#');
-        if (parts.length === 1) return escapeHtml(text); // no hashtags
-        let result = escapeHtml(parts[0]);
-        for (let i = 1; i < parts.length; i++) {
-            const tagText = parts[i];
+        // Split on @mentions first
+        const segments = text.split(/(@[A-Za-z0-9_]+)/g);
+        let withMentions = segments.map(seg => {
+            if (/^@[A-Za-z0-9_]+$/.test(seg)) {
+                const uname = seg.slice(1);
+                return `<span class="mention" onclick="window.findAndShowProfile('${uname}')">${escapeHtml(seg)}</span>`;
+            }
+            return escapeHtml(seg);
+        }).join('');
+        // Then hashtags on the result
+        const hashParts = withMentions.split('#');
+        if (hashParts.length === 1) return withMentions;
+        let result = hashParts[0];
+        for (let i = 1; i < hashParts.length; i++) {
+            const tagText = hashParts[i];
             if (tagText.trim().length === 0) { result += '#'; continue; }
             const tag = tagText.trim().replace(/\s+/g, ' ').toLowerCase();
-            result += `<span class="hashtag" onclick="window.showHashtagFeed('${tag.replace(/'/g, "\\'")}')">#${escapeHtml(tagText)}</span>`;
+            result += '<span class="hashtag" onclick="window.showHashtagFeed(\'' + tag.replace(/\'/g, "\\'") + '\')">#' + tagText + '</span>';
         }
         return result;
     }
@@ -881,25 +992,48 @@
         const isPostByAdmin = knownAdmins[post.userId] ? true : false;
         const postAdminBadge = isPostByAdmin ? `<span class="admin-crown" style="font-size:11px;vertical-align:middle;margin-left:5px;">👑 Admin</span>` : '';
 
-        // Render post text with clickable hashtags
+        // Pinned badge
+        const pinnedBadge = post.isPinned ? `<span class="pinned-badge">📌 Pinned</span>` : '';
+
+        // Pin button (own posts only)
+        const pinBtn = isOwnPost
+            ? `<button class="pin-post-btn" onclick="togglePinPost('${postDoc.id}', '${post.userId}', ${!!post.isPinned})" title="${post.isPinned ? 'Unpin' : 'Pin to profile'}">${post.isPinned ? '📌' : '📍'}</button>`
+            : '';
+
+        // Share private post button (own private posts)
+        const shareBtn = (isOwnPost && post.isPrivate)
+            ? `<button class="report-post-btn" onclick="openShareModal('${postDoc.id}')" title="Share with specific people" style="color:#667eea;">👥 Share</button>`
+            : '';
+
+        // Shared with info
+        const sharedWith = post.sharedWith && post.sharedWith.length > 0
+            ? `<div class="shared-with-section">🔒 Also shared with: ${post.sharedWith.map(n => `<span class="shared-chip">👤 ${escapeHtml(n)}</span>`).join('')}</div>`
+            : '';
+
+        // Render post text with @mentions + hashtags
         const postTextHtml = post.text ? `<div class="post-text">${renderPostText(post.text)}</div>` : '';
 
         // Safe escaped text for edit textarea
         const safeText = (post.text || '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#10;/g,'\n').replace(/`/g,'\`').replace(/\\/g,'\\');
 
         return `
+            ${pinnedBadge ? `<div style="padding:8px 16px 0;display:flex;align-items:center;gap:6px;">${pinnedBadge}</div>` : ''}
             <div class="post-header">
                 <div class="post-user-info">
-                    <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${post.userInitial || 'U'}</div>
+                    <div class="avatar-wrap">
+                        <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${post.userInitial || 'U'}</div>
+                        ${onlineUsers[post.userId] ? '<span class="online-dot"></span>' : ''}
+                    </div>
                     <div>
                         <div class="post-user-name clickable-user" onclick="showProfile('${post.userId}')">${post.userName || 'User'}${postAdminBadge}</div>
                         <div class="post-time">${timeAgo}${editedTag} ${isOwnPost ? privacyBadge : ''}</div>
                     </div>
                 </div>
-                <div style="display:flex;gap:8px;align-items:center;">${editBtn}${privacyToggleBtn}${reportBtn}${adminDeleteBtn}</div>
+                <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">${pinBtn}${shareBtn}${editBtn}${privacyToggleBtn}${reportBtn}${adminDeleteBtn}</div>
             </div>
             ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
             <div class="post-content" id="postContent_${postDoc.id}">${postTextHtml}</div>
+            ${sharedWith}
             <div class="post-edit-area" id="postEditArea_${postDoc.id}">
                 <textarea class="post-edit-textarea" id="postEditInput_${postDoc.id}"
                     oninput="updateEditHashtagPreview('${postDoc.id}', this.value)"
@@ -1272,13 +1406,42 @@
             snapshot.forEach((d) => comments.push({ id: d.id, data: d.data() }));
             comments.sort((a, b) => (a.data.timestamp || 0) - (b.data.timestamp || 0));
             container.innerHTML = '';
-            comments.forEach(({ id, data: c }) => {
+            // Top-level only
+            const topLevel = comments.filter(c => !c.data.parentId);
+            const replies = comments.filter(c => c.data.parentId);
+
+            topLevel.forEach(({ id, data: c }) => {
                 const timeAgo = c.createdAt ? getTimeAgo(c.createdAt.toDate()) : 'Just now';
                 const adminDel = (isAdmin && hasPerm('deleteComments')) ? `<button class="comment-delete-btn" onclick="adminDeleteComment('${id}', '${postId}')">🗑 Delete</button>` : '';
+                const commentReplies = replies.filter(r => r.data.parentId === id);
+                const repliesHtml = commentReplies.map(({ id: rid, data: r }) => {
+                    const rt = r.createdAt ? getTimeAgo(r.createdAt.toDate()) : 'Just now';
+                    return `<div class="reply-item"><div class="reply-avatar clickable-user" onclick="showProfile('${r.userId}')">${r.userInitial || 'U'}</div><div class="comment-content"><div class="comment-header"><span class="comment-user clickable-user" onclick="showProfile('${r.userId}')">${r.userName || 'User'}</span><span class="comment-time">${rt}</span></div><div class="comment-text">${escapeHtml(r.text)}</div></div></div>`;
+                }).join('');
                 const el = document.createElement('div');
                 el.className = 'comment-item';
-                el.innerHTML = `<div class="comment-avatar clickable-user" onclick="showProfile('${c.userId}')">${c.userInitial || 'U'}</div><div class="comment-content"><div class="comment-header"><span class="comment-user clickable-user" onclick="showProfile('${c.userId}')">${c.userName || 'User'}</span><span class="comment-time">${timeAgo}</span></div><div class="comment-text">${escapeHtml(c.text)}</div>${adminDel}</div>`;
+                el.innerHTML = `<div class="comment-avatar clickable-user" onclick="showProfile('${c.userId}')">${c.userInitial || 'U'}</div>
+                    <div class="comment-content" style="flex:1;">
+                        <div class="comment-header"><span class="comment-user clickable-user" onclick="showProfile('${c.userId}')">${c.userName || 'User'}</span><span class="comment-time">${timeAgo}</span></div>
+                        <div class="comment-text">${escapeHtml(c.text)}</div>
+                        <button class="reply-btn" onclick="toggleReplyInput('${id}')">↩ Reply</button>
+                        ${adminDel}
+                    </div>`;
                 container.appendChild(el);
+                // Replies
+                if (commentReplies.length > 0) {
+                    const repliesEl = document.createElement('div');
+                    repliesEl.className = 'replies-container';
+                    repliesEl.innerHTML = repliesHtml;
+                    container.appendChild(repliesEl);
+                }
+                // Reply input area
+                const replyInputEl = document.createElement('div');
+                replyInputEl.className = 'reply-input-area';
+                replyInputEl.id = `replyInput_${id}`;
+                replyInputEl.innerHTML = `<input class="reply-input" id="replyText_${id}" placeholder="Write a reply..." />
+                    <button class="reply-send-btn" onclick="postReply('${id}', '${postId}')">Reply</button>`;
+                container.appendChild(replyInputEl);
             });
             setTimeout(() => { container.scrollTop = container.scrollHeight; }, 150);
         }, (e) => {
@@ -1305,7 +1468,7 @@
             snapshot.forEach((nd) => {
                 const n = nd.data();
                 const timeAgo = n.createdAt ? getTimeAgo(n.createdAt.toDate()) : 'Just now';
-                const txt = n.type === 'like' ? `<strong>${n.fromUserName}</strong> liked your post` : n.type === 'comment' ? `<strong>${n.fromUserName}</strong> commented on your post` : `<strong>${n.fromUserName}</strong> started following you`;
+                const txt = n.type === 'like' ? `<strong>${n.fromUserName}</strong> liked your post` : n.type === 'comment' ? `<strong>${n.fromUserName}</strong> commented on your post` : n.type === 'mention' ? `<strong>${n.fromUserName}</strong> mentioned you in a post` : `<strong>${n.fromUserName}</strong> started following you`;
                 const el = document.createElement('div');
                 el.className = `notification-item ${!n.read ? 'unread' : ''}`;
                 el.onclick = () => { if (n.postId) { showFeed(); toggleNotifications(); } };
@@ -1332,6 +1495,18 @@
             const u = ud.data();
             document.getElementById('profilePageAvatar').textContent = u.displayName.charAt(0).toUpperCase();
             document.getElementById('profilePageName').textContent = u.displayName;
+            // Bio
+            const bioEl = document.getElementById('profilePageBio');
+            if (bioEl) bioEl.textContent = u.bio || '';
+            const bioContainer = document.getElementById('bioEditContainer');
+            if (bioContainer) {
+                const isOwnProf = userId === auth.currentUser.uid;
+                if (isOwnProf) {
+                    bioContainer.innerHTML = `<button class="edit-bio-btn" onclick="showBioEditor('${escapeHtml(u.bio||'').replace(/'/g,"\'")}')">✏️ ${u.bio ? 'Edit bio' : 'Add bio'}</button>`;
+                } else {
+                    bioContainer.innerHTML = '';
+                }
+            }
             document.getElementById('profilePagePhone').textContent = u.phoneId || '';
             document.getElementById('profilePagePostsCount').textContent = u.postsCount || 0;
             document.getElementById('profilePageFollowersCount').textContent = u.followersCount || 0;
@@ -1787,6 +1962,373 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // ── DARK MODE ────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function applyDarkMode(dark) {
+        document.body.classList.toggle('dark', dark);
+        const btn = document.getElementById('darkToggleBtn');
+        if (btn) btn.textContent = dark ? '☀️' : '🌙';
+        localStorage.setItem('htDark', dark ? '1' : '0');
+    }
+
+    window.toggleDarkMode = () => applyDarkMode(!document.body.classList.contains('dark'));
+
+    // Apply on load
+    if (localStorage.getItem('htDark') === '1') applyDarkMode(true);
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── ONLINE INDICATOR ─────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let onlineUsers = {}; // uid -> true if online recently
+
+    async function updateMyPresence() {
+        if (!auth.currentUser) return;
+        try { await updateDoc(doc(db, 'users', auth.currentUser.uid), { lastSeen: serverTimestamp() }); }
+        catch(_) {}
+    }
+
+    function listenOnlineUsers() {
+        // Listen to all users and track who was active in last 3 minutes
+        onSnapshot(collection(db, 'users'), (snap) => {
+            const now = Date.now();
+            onlineUsers = {};
+            snap.forEach(d => {
+                const ls = d.data().lastSeen;
+                if (ls && (now - ls.toMillis()) < 3 * 60 * 1000) {
+                    onlineUsers[d.id] = true;
+                }
+            });
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── SEARCH ───────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let searchTimeout = null;
+
+    window.handleSearch = (query) => {
+        const dropdown = document.getElementById('searchDropdown');
+        if (!query.trim()) { dropdown.style.display = 'none'; return; }
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => runSearch(query.trim()), 300);
+    };
+
+    async function runSearch(query) {
+        const dropdown = document.getElementById('searchDropdown');
+        dropdown.style.display = 'block';
+        dropdown.innerHTML = '<div class="search-no-results">Searching...</div>';
+        const q = query.toLowerCase();
+        try {
+            const usersSnap = await getDocs(collection(db, 'users'));
+            const postsSnap = await getDocs(collection(db, 'posts'));
+
+            const matchUsers = usersSnap.docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .filter(u => (u.displayName || '').toLowerCase().includes(q));
+
+            const matchPosts = postsSnap.docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .filter(p => (p.text || '').toLowerCase().includes(q) && !p.isPrivate)
+                .sort((a,b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0))
+                .slice(0, 5);
+
+            let html = '';
+
+            if (matchUsers.length > 0) {
+                html += '<div class="search-section-label">👤 People</div>';
+                html += matchUsers.slice(0, 4).map(u =>
+                    `<div class="search-result-item" onclick="showProfile('${u.id}'); closeSearch();">
+                        <div class="search-result-avatar">${(u.displayName||'U').charAt(0).toUpperCase()}</div>
+                        <div><div class="search-result-name">${escapeHtml(u.displayName||'')}</div>
+                        <div class="search-result-sub">${u.postsCount||0} posts · ${u.followersCount||0} followers</div></div>
+                    </div>`
+                ).join('');
+            }
+            if (matchPosts.length > 0) {
+                html += '<div class="search-section-label">📝 Posts</div>';
+                html += matchPosts.map(p =>
+                    `<div class="search-result-item" onclick="openSearchPost('${p.id}'); closeSearch();">
+                        <div class="search-result-avatar" style="background:#f0f4ff;color:#667eea;font-size:18px;">📝</div>
+                        <div><div class="search-result-post">${escapeHtml((p.text||'').slice(0,80))}${p.text&&p.text.length>80?'…':''}</div>
+                        <div class="search-result-post-meta">by ${escapeHtml(p.userName||'')} · ${p.likesCount||0} ❤️</div></div>
+                    </div>`
+                ).join('');
+            }
+            if (!html) html = '<div class="search-no-results">No results for "' + escapeHtml(query) + '"</div>';
+            dropdown.innerHTML = html;
+        } catch(e) {
+            dropdown.innerHTML = '<div class="search-no-results">Error: ' + e.message + '</div>';
+        }
+    }
+
+    window.closeSearch = () => {
+        const d = document.getElementById('searchDropdown');
+        if (d) d.style.display = 'none';
+        const i = document.getElementById('mainSearchInput');
+        if (i) i.value = '';
+    };
+
+    window.openSearchPost = (postId) => {
+        showFeed();
+        setTimeout(() => {
+            const el = document.querySelector(`[id="postContent_${postId}"]`);
+            if (el) el.closest('.post').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── USER BIO ─────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    window.showBioEditor = (currentBio) => {
+        const container = document.getElementById('bioEditContainer');
+        container.innerHTML = `
+            <div class="bio-edit-area">
+                <textarea class="bio-textarea" id="bioTextarea" maxlength="160" placeholder="Write something about yourself...">${escapeHtml(currentBio||'')}</textarea>
+                <div class="bio-char-count"><span id="bioCharCount">${(currentBio||'').length}</span>/160</div>
+                <button class="bio-save-btn" onclick="saveBio()">Save Bio</button>
+                <button class="bio-cancel-btn" onclick="cancelBioEdit()">Cancel</button>
+            </div>`;
+        const ta = document.getElementById('bioTextarea');
+        ta.addEventListener('input', () => { document.getElementById('bioCharCount').textContent = ta.value.length; });
+        ta.focus();
+    };
+
+    window.cancelBioEdit = () => { document.getElementById('bioEditContainer').innerHTML = ''; };
+
+    window.saveBio = async () => {
+        const bio = document.getElementById('bioTextarea').value.trim();
+        try {
+            await updateDoc(doc(db, 'users', auth.currentUser.uid), { bio });
+            document.getElementById('profilePageBio').textContent = bio;
+            document.getElementById('bioEditContainer').innerHTML = '';
+            // Re-render edit button
+            renderBioEditBtn(bio, auth.currentUser.uid === currentViewingUserId || currentViewingUserId === null);
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    function renderBioEditBtn(bio, isOwn) {
+        const container = document.getElementById('bioEditContainer');
+        if (!container) return;
+        if (isOwn) {
+            container.innerHTML = `<button class="edit-bio-btn" onclick="showBioEditor('${escapeHtml(bio||'').replace(/'/g,"\'")}')">✏️ ${bio ? 'Edit bio' : 'Add bio'}</button>`;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── PIN POST ─────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    window.togglePinPost = async (postId, userId, isPinned) => {
+        if (userId !== auth.currentUser.uid) return;
+        try {
+            if (!isPinned) {
+                // Unpin any existing pinned post first
+                const prevPinned = await getDocs(query(collection(db, 'posts'), where('userId', '==', userId), where('isPinned', '==', true)));
+                for (const d of prevPinned.docs) {
+                    await updateDoc(d.ref, { isPinned: false });
+                }
+                await updateDoc(doc(db, 'posts', postId), { isPinned: true });
+                await updateDoc(doc(db, 'users', userId), { pinnedPostId: postId });
+            } else {
+                await updateDoc(doc(db, 'posts', postId), { isPinned: false });
+                await updateDoc(doc(db, 'users', userId), { pinnedPostId: null });
+            }
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── COMMENT REPLIES ──────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    window.toggleReplyInput = (commentId) => {
+        const el = document.getElementById('replyInput_' + commentId);
+        if (!el) return;
+        el.classList.toggle('active');
+        if (el.classList.contains('active')) {
+            const inp = document.getElementById('replyText_' + commentId);
+            if (inp) inp.focus();
+        }
+    };
+
+    window.postReply = async (parentCommentId, postId) => {
+        const inp = document.getElementById('replyText_' + parentCommentId);
+        if (!inp) return;
+        const text = inp.value.trim();
+        if (!text) return;
+        try {
+            await addDoc(collection(db, 'comments'), {
+                postId, text, parentId: parentCommentId,
+                userId: auth.currentUser.uid,
+                userName: currentUserData.displayName,
+                userInitial: currentUserData.displayName.charAt(0).toUpperCase(),
+                createdAt: serverTimestamp(), timestamp: Date.now()
+            });
+            inp.value = '';
+            document.getElementById('replyInput_' + parentCommentId).classList.remove('active');
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── @MENTIONS ────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Find user by display name and show their profile
+    window.findAndShowProfile = async (displayName) => {
+        try {
+            const snap = await getDocs(collection(db, 'users'));
+            const match = snap.docs.find(d => (d.data().displayName||'').toLowerCase() === displayName.toLowerCase());
+            if (match) showProfile(match.id);
+            else alert('@' + displayName + ' not found');
+        } catch(e) { console.error(e); }
+    };
+
+    // Detect @mentions while typing in post composer and show dropdown
+    let mentionDropdown = null;
+    let mentionStart = -1;
+
+    window.setupMentionDetection = () => {
+        const input = document.getElementById('postInput');
+        if (!input) return;
+        input.addEventListener('input', async function() {
+            const val = this.value;
+            const pos = this.selectionStart;
+            // Find @ before cursor
+            const before = val.slice(0, pos);
+            const atIdx = before.lastIndexOf('@');
+            if (atIdx === -1 || before.slice(atIdx).includes(' ')) {
+                hideMentionDropdown(); return;
+            }
+            const query = before.slice(atIdx + 1);
+            if (query.length === 0) { hideMentionDropdown(); return; }
+            mentionStart = atIdx;
+            await showMentionDropdown(query, input);
+        });
+        input.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideMentionDropdown(); });
+        document.addEventListener('click', (e) => { if (!e.target.closest('#postInput')) hideMentionDropdown(); });
+    };
+
+    async function showMentionDropdown(query, inputEl) {
+        hideMentionDropdown();
+        const snap = await getDocs(collection(db, 'users'));
+        const q = query.toLowerCase();
+        const matches = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            .filter(u => (u.displayName||'').toLowerCase().startsWith(q) && u.id !== auth.currentUser.uid)
+            .slice(0, 5);
+        if (!matches.length) return;
+
+        const rect = inputEl.getBoundingClientRect();
+        mentionDropdown = document.createElement('div');
+        mentionDropdown.className = 'mention-dropdown';
+        mentionDropdown.style.cssText = 'position:fixed;top:' + (rect.bottom + 4) + 'px;left:' + rect.left + 'px;';
+        mentionDropdown.innerHTML = matches.map(u =>
+            `<div class="mention-item" onclick="insertMention('${u.id}','${escapeHtml(u.displayName).replace(/'/g,"\'")}')">
+                <div class="mention-item-avatar">${(u.displayName||'U').charAt(0).toUpperCase()}</div>
+                ${escapeHtml(u.displayName)}
+            </div>`
+        ).join('');
+        document.body.appendChild(mentionDropdown);
+    }
+
+    window.insertMention = (uid, displayName) => {
+        const input = document.getElementById('postInput');
+        const val = input.value;
+        const before = val.slice(0, mentionStart);
+        const after = val.slice(input.selectionStart);
+        input.value = before + '@' + displayName + ' ' + after;
+        input.focus();
+        hideMentionDropdown();
+        // Also notify when post is saved — handled in createPost
+    };
+
+    function hideMentionDropdown() {
+        if (mentionDropdown) { mentionDropdown.remove(); mentionDropdown = null; }
+    }
+
+    // Extract @mentions from text and send notifications
+    async function sendMentionNotifications(text, postId) {
+        const mentions = text.match(/@([A-Za-z0-9_]+)/g) || [];
+        const names = [...new Set(mentions.map(m => m.slice(1).toLowerCase()))];
+        if (!names.length) return;
+        const snap = await getDocs(collection(db, 'users'));
+        for (const d of snap.docs) {
+            const u = d.data();
+            if (names.includes((u.displayName||'').toLowerCase()) && d.id !== auth.currentUser.uid) {
+                await addDoc(collection(db, 'notifications'), {
+                    userId: d.id, fromUserId: auth.currentUser.uid,
+                    fromUserName: currentUserData.displayName,
+                    fromUserInitial: currentUserData.displayName.charAt(0).toUpperCase(),
+                    type: 'mention', postId, read: false,
+                    createdAt: serverTimestamp(), timestamp: Date.now()
+                });
+            }
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── SHARE PRIVATE POST ───────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let sharePostId = null;
+    let shareAllUsers = [];
+
+    window.openShareModal = async (postId) => {
+        sharePostId = postId;
+        document.getElementById('shareModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        // Load users
+        const snap = await getDocs(collection(db, 'users'));
+        shareAllUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            .filter(u => u.id !== auth.currentUser.uid);
+        // Load current sharedWith
+        const postDoc = await getDoc(doc(db, 'posts', postId));
+        const current = postDoc.exists() ? (postDoc.data().sharedWith || []) : [];
+        renderShareUserList(shareAllUsers, current);
+    };
+
+    function renderShareUserList(users, selected) {
+        const list = document.getElementById('shareUserList');
+        list.innerHTML = users.map(u =>
+            `<div class="share-user-item">
+                <input type="checkbox" id="shareCheck_${u.id}" value="${u.id}" ${selected.includes(u.displayName) ? 'checked' : ''}>
+                <div class="search-result-avatar" style="width:32px;height:32px;font-size:13px;">${(u.displayName||'U').charAt(0).toUpperCase()}</div>
+                <label for="shareCheck_${u.id}" style="font-size:14px;color:var(--text);cursor:pointer;">${escapeHtml(u.displayName||'')}</label>
+            </div>`
+        ).join('');
+    }
+
+    window.filterShareUsers = (q) => {
+        const filtered = shareAllUsers.filter(u => (u.displayName||'').toLowerCase().includes(q.toLowerCase()));
+        const checked = shareAllUsers.filter(u => {
+            const el = document.getElementById('shareCheck_' + u.id);
+            return el && el.checked;
+        }).map(u => u.displayName);
+        renderShareUserList(filtered, checked);
+    };
+
+    window.confirmShare = async () => {
+        const checked = shareAllUsers.filter(u => {
+            const el = document.getElementById('shareCheck_' + u.id);
+            return el && el.checked;
+        });
+        const names = checked.map(u => u.displayName);
+        try {
+            await updateDoc(doc(db, 'posts', sharePostId), { sharedWith: names });
+            closeShareModal();
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    window.closeShareModal = () => {
+        document.getElementById('shareModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+        sharePostId = null;
+    };
+    window.closeShareIfOutside = (e) => { if (e.target.id === 'shareModal') closeShareModal(); };
+
+        // ─────────────────────────────────────────────────────────────────────────
     // ── SUB-ADMIN SYSTEM ─────────────────────────────────────────────────────
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -2044,6 +2586,10 @@
                 if (isMainAdmin) {
                     document.getElementById('adminTabAdmins').style.display = 'block';
                 }
+            listenOnlineUsers();
+            updateMyPresence();
+            setInterval(updateMyPresence, 60000);
+            setTimeout(setupMentionDetection, 500);
             } else { hideAdminUI(); }
 
             // Load admin roster for badge rendering
@@ -2079,6 +2625,8 @@
             });
 
             document.addEventListener('click', (e) => {
+                const dropdown = document.getElementById('searchDropdown');
+                if (dropdown && !e.target.closest('.search-bar')) dropdown.style.display = 'none';
                 const panel = document.getElementById('notificationsPanel');
                 if (panel.classList.contains('active') && !panel.contains(e.target) && !e.target.closest('.icon-btn-wrapper')) panel.classList.remove('active');
             });
