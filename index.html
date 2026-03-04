@@ -1006,8 +1006,8 @@
             : '';
 
         // Shared with info
-        const sharedWith = post.sharedWith && post.sharedWith.length > 0
-            ? `<div class="shared-with-section">🔒 Also shared with: ${post.sharedWith.map(n => `<span class="shared-chip">👤 ${escapeHtml(n)}</span>`).join('')}</div>`
+        const sharedWith = post.sharedWithNames && post.sharedWithNames.length > 0
+            ? `<div class="shared-with-section">🔒 Also shared with: ${post.sharedWithNames.map(n => `<span class="shared-chip">👤 ${escapeHtml(n)}</span>`).join('')}</div>`
             : '';
 
         // Render post text with @mentions + hashtags
@@ -1123,7 +1123,7 @@
                 let hasVisible = false;
                 matchingDocs.forEach((postDoc) => {
                     const post = postDoc.data();
-                    const isSharedWithMe = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                    const isSharedWithMe = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
                     if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
                     hasVisible = true;
                     const el = document.createElement('div');
@@ -1177,7 +1177,7 @@
                     let hasVisible = false;
                     snapshot.forEach((postDoc) => {
                         const post = postDoc.data();
-                        const isSharedWithMe = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                        const isSharedWithMe = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
                     if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
                         hasVisible = true;
                         const el = document.createElement('div');
@@ -1213,7 +1213,7 @@
                 let hasVisible = false;
                 snapshot.forEach((postDoc) => {
                     const post = postDoc.data();
-                    const isSharedWithMe = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                    const isSharedWithMe = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
                     if (post.isPrivate && post.userId !== auth.currentUser.uid && !isAdmin && !isSharedWithMe) return;
                     hasVisible = true;
                     const el = document.createElement('div');
@@ -1590,7 +1590,7 @@
             let hasVisible = false;
             snapshot.forEach((pd) => {
                 const post = pd.data();
-                const isSharedWithMe2 = post.sharedWith && currentUserData && post.sharedWith.includes(currentUserData.displayName);
+                const isSharedWithMe2 = post.sharedWith && auth.currentUser && post.sharedWith.includes(auth.currentUser.uid);
                 if (post.isPrivate && !isOwnProfile && !isAdmin && !isSharedWithMe2) return;
                 hasVisible = true;
                 const el = document.createElement('div');
@@ -2289,7 +2289,7 @@
             .filter(u => u.id !== auth.currentUser.uid && !u.banned && !u.tempBanned);
         // Load current sharedWith
         const postDoc = await getDoc(doc(db, 'posts', postId));
-        const current = postDoc.exists() ? (postDoc.data().sharedWith || []) : [];
+        const current = postDoc.exists() ? (postDoc.data().sharedWith || []) : []; // now stores UIDs
         renderShareUserList(shareAllUsers, current);
     };
 
@@ -2297,7 +2297,7 @@
         const list = document.getElementById('shareUserList');
         list.innerHTML = users.map(u =>
             `<div class="share-user-item">
-                <input type="checkbox" id="shareCheck_${u.id}" value="${u.id}" ${selected.includes(u.displayName) ? 'checked' : ''}>
+                <input type="checkbox" id="shareCheck_${u.id}" value="${u.id}" ${selected.includes(u.id) ? 'checked' : ''}>
                 <div class="search-result-avatar" style="width:32px;height:32px;font-size:13px;">${(u.displayName||'U').charAt(0).toUpperCase()}</div>
                 <label for="shareCheck_${u.id}" style="font-size:14px;color:var(--text);cursor:pointer;">${escapeHtml(u.displayName||'')}</label>
             </div>`
@@ -2306,11 +2306,12 @@
 
     window.filterShareUsers = (q) => {
         const filtered = shareAllUsers.filter(u => (u.displayName||'').toLowerCase().includes(q.toLowerCase()));
-        const checked = shareAllUsers.filter(u => {
+        // preserve checked state by UID before re-render
+        const checkedUids = shareAllUsers.filter(u => {
             const el = document.getElementById('shareCheck_' + u.id);
             return el && el.checked;
-        }).map(u => u.displayName);
-        renderShareUserList(filtered, checked);
+        }).map(u => u.id);
+        renderShareUserList(filtered, checkedUids);
     };
 
     window.confirmShare = async () => {
@@ -2318,9 +2319,10 @@
             const el = document.getElementById('shareCheck_' + u.id);
             return el && el.checked;
         });
+        const uids = checked.map(u => u.id);
         const names = checked.map(u => u.displayName);
         try {
-            await updateDoc(doc(db, 'posts', sharePostId), { sharedWith: names });
+            await updateDoc(doc(db, 'posts', sharePostId), { sharedWith: uids, sharedWithNames: names });
             closeShareModal();
         } catch(e) { alert('Failed: ' + e.message); }
     };
