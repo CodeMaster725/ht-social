@@ -433,18 +433,116 @@
         .mention-item-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:700; flex-shrink:0; }
 
         /* ── SHARED WITH ── */
-        .shared-with-section { padding: 8px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-sub); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .shared-chip { background: var(--hover); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; font-size: 12px; color: var(--text); display: inline-flex; align-items: center; gap: 4px; }
-        .share-modal-inner { background: var(--surface); border-radius: 12px; width: 100%; max-width: 420px; padding: 24px; }
-        .share-modal-inner h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-        .share-search-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--input-bg); color: var(--text); outline: none; margin: 12px 0; }
-        .share-search-input:focus { border-color: #667eea; }
-        .share-user-list { max-height: 220px; overflow-y: auto; margin-bottom: 14px; }
-        .share-user-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
-        .share-user-item:hover { background: var(--hover); }
-        .share-user-item input[type=checkbox] { width: 16px; height: 16px; accent-color: #667eea; }
-        .share-confirm-btn { width: 100%; background: #667eea; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .share-cancel-btn { width: 100%; background: transparent; color: var(--text-sub); border: none; padding: 10px; font-size: 14px; cursor: pointer; margin-top: 6px; }
+
+        /* ── PROFILE PICTURE ── */
+        .user-avatar img, .comment-avatar img, .reply-avatar img,
+        .profile-large-avatar img, .user-avatar-small img {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+        }
+        .avatar-upload-overlay { position: absolute; bottom: 0; right: 0; background: rgba(0,0,0,0.6);
+            border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; font-size: 16px; }
+        .profile-avatar-wrap { position: relative; display: inline-block; }
+
+        /* ── STORIES ── */
+        .stories-bar { display: flex; gap: 12px; padding: 8px 0 16px; overflow-x: auto;
+            scrollbar-width: none; margin-bottom: 8px; }
+        .stories-bar::-webkit-scrollbar { display: none; }
+        .story-bubble { display: flex; flex-direction: column; align-items: center; gap: 4px;
+            cursor: pointer; flex-shrink: 0; }
+        .story-ring { width: 64px; height: 64px; border-radius: 50%;
+            background: linear-gradient(135deg, #f7b733, #fc4a1a); padding: 2px; }
+        .story-ring.seen { background: var(--border); }
+        .story-ring.add { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .story-inner { width: 100%; height: 100%; border-radius: 50%;
+            background: var(--surface); display: flex; align-items: center;
+            justify-content: center; overflow: hidden; border: 2px solid var(--surface); }
+        .story-inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .story-name { font-size: 11px; color: var(--text-sub); max-width: 64px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .story-viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 1100; display: none; flex-direction: column; align-items: center;
+            justify-content: center; }
+        .story-viewer.active { display: flex; }
+        .story-viewer-content { position: relative; max-width: 500px; width: 100%; }
+        .story-viewer-img { width: 100%; max-height: 80vh; object-fit: contain; border-radius: 12px; }
+        .story-viewer-text { color: white; font-size: 22px; font-weight: 700;
+            text-align: center; padding: 40px 24px; background: linear-gradient(135deg,#667eea,#764ba2);
+            border-radius: 16px; min-height: 200px; display: flex; align-items: center;
+            justify-content: center; }
+        .story-viewer-header { display: flex; align-items: center; gap: 12px;
+            padding: 16px; position: absolute; top: -60px; left: 0; right: 0; }
+        .story-viewer-name { color: white; font-weight: 600; font-size: 15px; }
+        .story-viewer-time { color: rgba(255,255,255,0.6); font-size: 12px; }
+        .story-progress { height: 3px; background: rgba(255,255,255,0.3); border-radius: 2px; flex: 1; }
+        .story-progress-fill { height: 100%; background: white; border-radius: 2px;
+            transition: width 5s linear; }
+        .story-close { position: absolute; top: 16px; right: 16px; background: none;
+            border: none; color: white; font-size: 28px; cursor: pointer; z-index: 10; }
+        .story-creator-bar { display: flex; gap: 8px; padding: 4px 0 16px; align-items: center; }
+        .add-story-btn { background: var(--surface); border: 2px dashed var(--border);
+            border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600;
+            color: var(--text-sub); cursor: pointer; white-space: nowrap; }
+        .add-story-btn:hover { border-color: #667eea; color: #667eea; }
+        .story-delete-btn { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
+            background: #ed4956; color: white; border: none; padding: 4px 12px;
+            border-radius: 6px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+
+        /* ── BLOCK USER ── */
+        .block-btn { background: none; border: 1px solid #ed4956; color: #ed4956;
+            padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .block-btn:hover { background: #ed4956; color: white; }
+        .block-btn.blocked { background: #ed4956; color: white; }
+        .blocked-overlay { display: flex; align-items: center; gap: 8px; padding: 16px;
+            color: var(--text-sub); font-size: 14px; background: var(--hover);
+            border-radius: 10px; border: 1px solid var(--border); }
+
+        /* ── POLLS ── */
+        .poll-container { margin: 12px 0; }
+        .poll-question { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+        .poll-option { position: relative; border: 1px solid var(--border); border-radius: 8px;
+            overflow: hidden; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+        .poll-option:hover { border-color: #667eea; }
+        .poll-option.voted { border-color: #667eea; cursor: default; }
+        .poll-option.winner { border-color: #2ecc71; }
+        .poll-option-fill { position: absolute; inset: 0; background: rgba(102,126,234,0.12);
+            transition: width 0.5s ease; border-radius: 8px; }
+        .poll-option.winner .poll-option-fill { background: rgba(46,204,113,0.12); }
+        .poll-option-content { position: relative; display: flex; justify-content: space-between;
+            align-items: center; padding: 10px 14px; font-size: 14px; color: var(--text); }
+        .poll-vote-pct { font-size: 12px; font-weight: 700; color: #667eea; }
+        .poll-option.winner .poll-vote-pct { color: #2ecc71; }
+        .poll-total { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+        .poll-composer { background: var(--hover); border-radius: 10px; padding: 12px;
+            margin: 10px 0; border: 1px solid var(--border); }
+        .poll-composer-question { width: 100%; border: 1px solid var(--border); border-radius: 8px;
+            padding: 8px 12px; font-size: 14px; font-family: inherit; background: var(--input-bg);
+            color: var(--text); outline: none; margin-bottom: 8px; }
+        .poll-option-input { width: 100%; border: 1px solid var(--border); border-radius: 8px;
+            padding: 7px 12px; font-size: 13px; font-family: inherit; background: var(--input-bg);
+            color: var(--text); outline: none; margin-bottom: 6px; }
+        .poll-add-option-btn { background: none; border: 1px dashed var(--border); color: var(--text-sub);
+            border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; width: 100%; }
+        .poll-add-option-btn:hover { border-color: #667eea; color: #667eea; }
+
+        /* ── USER WARNINGS ── */
+        .warning-badge { background: #ff9800; color: white; border-radius: 10px; padding: 2px 8px;
+            font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; }
+        .warning-card { background: rgba(255,152,0,0.08); border: 1px solid rgba(255,152,0,0.3);
+            border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; }
+        .warning-card .warning-text { font-size: 13px; color: var(--text); margin-top: 4px; }
+        .warning-card .warning-meta { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+        .warn-user-btn { background: #ff9800; color: white; border: none; padding: 6px 14px;
+            border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .warn-user-btn:hover { background: #e68900; }
+        .warning-banner { background: linear-gradient(135deg,#ff9800,#f44336); color: white;
+            border-radius: 8px; padding: 10px 16px; margin-bottom: 12px; font-size: 13px;
+            display: flex; align-items: center; gap: 8px; }
+
+        /* ── IP BAN ── */
+        .device-ban-btn { background: #7c4dff; color: white; border: none; padding: 6px 14px;
+            border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .device-ban-btn:hover { background: #6c3fef; }
     </style>
 </head>
 <body>
@@ -473,15 +571,42 @@
     </div>
 </div>
 
-<!-- SHARE PRIVATE POST MODAL -->
-<div class="modal-overlay" id="shareModal" onclick="closeShareIfOutside(event)">
+<!-- STORY VIEWER -->
+<div class="story-viewer" id="storyViewer">
+    <button class="story-close" onclick="closeStoryViewer()">✕</button>
+    <div style="width:100%;max-width:500px;padding:0 16px;">
+        <div style="display:flex;gap:6px;margin-bottom:16px;" id="storyProgressBars"></div>
+        <div class="story-viewer-header">
+            <div class="user-avatar" id="storyViewerAvatar" style="width:40px;height:40px;font-size:16px;flex-shrink:0;"></div>
+            <div>
+                <div class="story-viewer-name" id="storyViewerName"></div>
+                <div class="story-viewer-time" id="storyViewerTime"></div>
+            </div>
+            <button id="storyDeleteBtn" style="display:none;background:#ed4956;color:white;border:none;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;margin-left:auto;" onclick="deleteCurrentStory()">🗑 Delete</button>
+        </div>
+        <div class="story-viewer-content" id="storyViewerContent"></div>
+    </div>
+</div>
+
+<!-- ADD STORY MODAL -->
+<div class="modal-overlay" id="addStoryModal" onclick="closeAddStoryIfOutside(event)">
     <div class="share-modal-inner" onclick="event.stopPropagation()">
-        <h3>🔒 Share with People</h3>
-        <p style="font-size:13px;color:var(--text-sub);margin-bottom:4px;">Choose who can see this private post</p>
-        <input type="text" class="share-search-input" id="shareSearchInput" placeholder="Search by name..." oninput="filterShareUsers(this.value)">
-        <div class="share-user-list" id="shareUserList"></div>
-        <button class="share-confirm-btn" onclick="confirmShare()">✓ Update Sharing</button>
-        <button class="share-cancel-btn" onclick="closeShareModal()">Cancel</button>
+        <h3>➕ Add Story</h3>
+        <p style="font-size:13px;color:var(--text-sub);margin-bottom:12px;">Disappears after 24 hours</p>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <button onclick="setStoryType('text')" id="storyTypeText" style="flex:1;padding:8px;border:2px solid #667eea;border-radius:8px;background:#667eea;color:white;cursor:pointer;font-weight:600;">✏️ Text</button>
+            <button onclick="setStoryType('image')" id="storyTypeImage" style="flex:1;padding:8px;border:2px solid var(--border);border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font-weight:600;">📷 Photo</button>
+        </div>
+        <div id="storyTextInput">
+            <textarea id="storyTextarea" style="width:100%;min-height:100px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:15px;font-family:inherit;background:var(--input-bg);color:var(--text);outline:none;resize:vertical;" placeholder="What's on your mind?"></textarea>
+        </div>
+        <div id="storyImageInput" style="display:none;">
+            <input type="file" id="storyImageFile" accept="image/*" onchange="previewStoryImage(this)" style="display:none;">
+            <div onclick="document.getElementById('storyImageFile').click()" style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;color:var(--text-sub);">📷 Tap to choose photo</div>
+            <img id="storyImagePreview" style="display:none;width:100%;border-radius:8px;margin-top:8px;max-height:200px;object-fit:cover;">
+        </div>
+        <button class="share-confirm-btn" style="margin-top:12px;" onclick="postStory()">Post Story</button>
+        <button class="share-cancel-btn" onclick="closeAddStoryModal()">Cancel</button>
     </div>
 </div>
 
@@ -647,6 +772,7 @@
                         <h2 class="profile-username" id="profilePageName"></h2>
                         <span id="profileBannedBadge" class="banned-badge" style="display:none;">BANNED</span>
                         <button class="follow-btn-large" id="followBtn" style="display: none;" onclick="toggleFollow()">Follow</button>
+                        <button class="block-btn" id="blockBtn" style="display:none;" onclick="toggleBlockUser()">🚫 Block</button>
                         <button class="back-btn" onclick="showFeed()">← Back to Feed</button>
                     </div>
                     <div class="profile-stats-large">
@@ -678,15 +804,20 @@
                 <!-- Hashtag preview while typing -->
                 <div id="hashtagPreviewContainer"></div>
                 <div id="imagePreviewContainer"></div>
+                <div id="pollComposerContainer"></div>
                 <div class="create-post-actions">
                     <div class="post-action-btns">
                         <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
                         <button class="action-btn" onclick="document.getElementById('imageInput').click()">🖼️</button>
+                        <button class="action-btn" onclick="togglePollComposer()" title="Create poll" id="pollToggleBtn">📊</button>
                         <button class="privacy-toggle" id="privacyToggle" onclick="togglePrivacy()">🌐 Public</button>
                     </div>
                     <button class="post-btn" id="postButton" onclick="createPost()" disabled>Post</button>
                 </div>
             </div>
+
+            <!-- STORIES BAR -->
+            <div id="storiesBar" class="stories-bar"></div>
 
             <!-- ── FEED TABS ── -->
             <div class="feed-tabs" id="feedTabs">
@@ -935,21 +1066,25 @@
             // Extract hashtags from text
             const hashtags = extractHashtags(text);
 
+            const pollData = buildPollData();
             await addDoc(collection(db, 'posts'), {
                 text,
                 image: selectedImage || null,
                 userId: auth.currentUser.uid,
                 userName: currentUserData.displayName,
                 userInitial: currentUserData.displayName.charAt(0).toUpperCase(),
+                userPhoto: currentUserData.photoURL || null,
                 likes: [],
                 likesCount: 0,
                 commentsCount: 0,
                 isPrivate: isPrivatePost,
-                // visibleTo: always starts as just the owner. Share modal adds more UIDs.
                 visibleTo: [auth.currentUser.uid],
                 hashtags,
+                ...(pollData ? { poll: pollData } : {}),
                 createdAt: serverTimestamp()
             });
+            // Reset poll composer
+            if (pollActive) { pollActive = false; pollOptionCount = 2; document.getElementById('pollComposerContainer').innerHTML = ''; document.getElementById('pollToggleBtn').style.color = ''; }
             await updateDoc(doc(db, 'users', auth.currentUser.uid), { postsCount: increment(1) });
 
             document.getElementById('postInput').value = '';
@@ -990,6 +1125,15 @@
             ? `<button class="edit-post-btn" onclick="toggleEditArea('${postDoc.id}')" title="Edit post">✏️ Edit</button>`
             : '';
 
+        // Block check — don't render blocked users' posts in feed
+        // (handled in feed filter, but guard here too)
+
+        // Avatar HTML helper (pfp or initial)
+        const avatarHtml = (photoURL, initial, size='42px', fontSize='18px') =>
+            photoURL
+                ? `<img src="${photoURL}" style="width:${size};height:${size};border-radius:50%;object-fit:cover;">`
+                : (initial || 'U');
+
         // Admin badge on post
         const isPostByAdmin = knownAdmins[post.userId] ? true : false;
         const postAdminBadge = isPostByAdmin ? `<span class="admin-crown" style="font-size:11px;vertical-align:middle;margin-left:5px;">👑 Admin</span>` : '';
@@ -1002,15 +1146,8 @@
             ? `<button class="pin-post-btn" onclick="togglePinPost('${postDoc.id}', '${post.userId}', ${!!post.isPinned})" title="${post.isPinned ? 'Unpin' : 'Pin to profile'}">${post.isPinned ? '📌' : '📍'}</button>`
             : '';
 
-        // Share private post button (own private posts)
-        const shareBtn = (isOwnPost && post.isPrivate)
-            ? `<button class="report-post-btn" onclick="openShareModal('${postDoc.id}')" title="Share with specific people" style="color:#667eea;">👥 Share</button>`
-            : '';
 
         // Shared with info
-        const sharedWith = post.sharedWithNames && post.sharedWithNames.length > 0
-            ? `<div class="shared-with-section">🔒 Also shared with: ${post.sharedWithNames.map(n => `<span class="shared-chip">👤 ${escapeHtml(n)}</span>`).join('')}</div>`
-            : '';
 
         // Render post text with @mentions + hashtags
         const postTextHtml = post.text ? `<div class="post-text">${renderPostText(post.text)}</div>` : '';
@@ -1023,7 +1160,7 @@
             <div class="post-header">
                 <div class="post-user-info">
                     <div class="avatar-wrap">
-                        <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${post.userInitial || 'U'}</div>
+                        <div class="user-avatar clickable-user" onclick="showProfile('${post.userId}')">${avatarHtml(post.userPhoto, post.userInitial)}</div>
                         ${onlineUsers[post.userId] ? '<span class="online-dot"></span>' : ''}
                     </div>
                     <div>
@@ -1031,11 +1168,11 @@
                         <div class="post-time">${timeAgo}${editedTag} ${isOwnPost ? privacyBadge : ''}</div>
                     </div>
                 </div>
-                <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">${pinBtn}${shareBtn}${editBtn}${privacyToggleBtn}${reportBtn}${adminDeleteBtn}</div>
+                <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">${pinBtn}${editBtn}${privacyToggleBtn}${reportBtn}${adminDeleteBtn}</div>
             </div>
             ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
             <div class="post-content" id="postContent_${postDoc.id}">${postTextHtml}</div>
-            ${sharedWith}
+            ${post.poll ? renderPoll(post.poll, postDoc.id, post.userId) : ''}
             <div class="post-edit-area" id="postEditArea_${postDoc.id}">
                 <textarea class="post-edit-textarea" id="postEditInput_${postDoc.id}"
                     oninput="updateEditHashtagPreview('${postDoc.id}', this.value)"
@@ -1226,6 +1363,7 @@
                 snapshot.forEach((postDoc) => {
                     const post = postDoc.data();
                     if (!canSeePost(post)) return;
+                    if (blockedUsers.has(post.userId)) return;
                     hasVisible = true;
                     const el = document.createElement('div');
                     el.className = 'post' + (post.isPrivate ? ' private-post' : '');
@@ -1379,7 +1517,11 @@
         currentPostId = postId;
         document.getElementById('commentsModal').classList.add('active');
         document.body.style.overflow = 'hidden';
-        document.getElementById('commentAvatar').textContent = currentUserData.displayName.charAt(0).toUpperCase();
+        const commentAv = document.getElementById('commentAvatar');
+        if (commentAv) {
+            if (currentUserData.photoURL) commentAv.innerHTML = `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            else commentAv.textContent = currentUserData.displayName.charAt(0).toUpperCase();
+        }
         document.getElementById('commentInput').value = '';
         document.getElementById('sendCommentBtn').disabled = true;
         loadComments(postId);
@@ -1482,7 +1624,7 @@
             snapshot.forEach((nd) => {
                 const n = nd.data();
                 const timeAgo = n.createdAt ? getTimeAgo(n.createdAt.toDate()) : 'Just now';
-                const txt = n.type === 'like' ? `<strong>${n.fromUserName}</strong> liked your post` : n.type === 'comment' ? `<strong>${n.fromUserName}</strong> commented on your post` : n.type === 'mention' ? `<strong>${n.fromUserName}</strong> mentioned you in a post` : `<strong>${n.fromUserName}</strong> started following you`;
+                const txt = n.type === 'like' ? `<strong>${n.fromUserName}</strong> liked your post` : n.type === 'comment' ? `<strong>${n.fromUserName}</strong> commented on your post` : n.type === 'mention' ? `<strong>${n.fromUserName}</strong> mentioned you in a post` : n.type === 'warning' ? `⚠️ Admin warning: ${escapeHtml(n.reason||'')}` : `<strong>${n.fromUserName}</strong> started following you`;
                 const el = document.createElement('div');
                 el.className = `notification-item ${!n.read ? 'unread' : ''}`;
                 el.onclick = () => { if (n.postId) { showFeed(); toggleNotifications(); } };
@@ -1507,11 +1649,48 @@
             const ud = await getDoc(doc(db, 'users', userId));
             if (!ud.exists()) { alert('User not found'); return; }
             const u = ud.data();
-            document.getElementById('profilePageAvatar').textContent = u.displayName.charAt(0).toUpperCase();
+            const profAv = document.getElementById('profilePageAvatar');
+            if (profAv) {
+                if (u.photoURL) profAv.innerHTML = `<img src="${u.photoURL}" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">`;
+                else profAv.textContent = u.displayName.charAt(0).toUpperCase();
+            }
             document.getElementById('profilePageName').textContent = u.displayName;
             // Bio
+            // PFP upload on own profile
+            const profAvWrap = document.getElementById('profilePageAvatar');
+            if (profAvWrap && userId === auth.currentUser.uid) {
+                profAvWrap.parentElement.style.position = 'relative';
+                // add upload overlay if not already there
+                if (!document.getElementById('pfpUploadOverlay')) {
+                    const overlay = document.createElement('div');
+                    overlay.id = 'pfpUploadOverlay';
+                    overlay.className = 'avatar-upload-overlay';
+                    overlay.innerHTML = '📷';
+                    overlay.onclick = () => document.getElementById('pfpFileInput').click();
+                    profAvWrap.parentElement.appendChild(overlay);
+                    const inp = document.createElement('input');
+                    inp.type = 'file'; inp.id = 'pfpFileInput'; inp.accept = 'image/*';
+                    inp.style.display = 'none';
+                    inp.onchange = uploadProfilePicture;
+                    profAvWrap.parentElement.appendChild(inp);
+                }
+            } else {
+                const ov = document.getElementById('pfpUploadOverlay');
+                if (ov) ov.remove();
+            }
+
             const bioEl = document.getElementById('profilePageBio');
             if (bioEl) bioEl.textContent = u.bio || '';
+            // Warning badge
+            const existingWarnBadge = document.getElementById('profileWarnBadge');
+            if (existingWarnBadge) existingWarnBadge.remove();
+            if ((u.warningCount || 0) > 0) {
+                const badge = document.createElement('span');
+                badge.id = 'profileWarnBadge';
+                badge.className = 'warning-badge';
+                badge.innerHTML = '⚠️ ' + u.warningCount + ' warning' + (u.warningCount > 1 ? 's' : '');
+                document.getElementById('profilePageName').after(badge);
+            }
             const bioContainer = document.getElementById('bioEditContainer');
             if (bioContainer) {
                 const isOwnProf = userId === auth.currentUser.uid;
@@ -1534,6 +1713,15 @@
                 const isFoll = await checkIfFollowing(userId);
                 followBtn.textContent = isFoll ? 'Following' : 'Follow';
                 followBtn.className = 'follow-btn-large' + (isFoll ? ' following' : '');
+
+            // Block button
+            const blockBtn = document.getElementById('blockBtn');
+            if (blockBtn) {
+                const isBlocked = blockedUsers.has(userId);
+                blockBtn.style.display = 'block';
+                blockBtn.textContent = isBlocked ? '✓ Blocked' : '🚫 Block';
+                blockBtn.classList.toggle('blocked', isBlocked);
+            }
             }
             const adminActions = document.getElementById('adminProfileActions');
             const adminBanBtn = document.getElementById('adminProfileBanBtn');
@@ -2286,73 +2474,476 @@
     // ── SHARE PRIVATE POST ───────────────────────────────────────────────────
     // ─────────────────────────────────────────────────────────────────────────
 
-    let sharePostId = null;
-    let shareAllUsers = [];
 
-    window.openShareModal = async (postId) => {
-        sharePostId = postId;
-        document.getElementById('shareModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        // Load users
-        const snap = await getDocs(collection(db, 'users'));
-        shareAllUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-            .filter(u => u.id !== auth.currentUser.uid && !u.banned && !u.tempBanned);
-        // Load currently visible UIDs (excluding the owner themselves)
-        const postDocSnap = await getDoc(doc(db, 'posts', postId));
-        const postData = postDocSnap.exists() ? postDocSnap.data() : {};
-        const ownerUid = postData.userId || auth.currentUser.uid;
-        const current = (postData.visibleTo || [ownerUid]).filter(uid => uid !== ownerUid);
-        renderShareUserList(shareAllUsers, current);
+        // ─────────────────────────────────────────────────────────────────────────
+    // ── PROFILE PICTURE UPLOAD ───────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    window.uploadProfilePicture = async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+            // Resize to max 400px
+            const img = new Image();
+            img.onload = async () => {
+                const canvas = document.createElement('canvas');
+                const max = 400;
+                let w = img.width, h = img.height;
+                if (w > h) { if (w > max) { h = h * max / w; w = max; } }
+                else { if (h > max) { w = w * max / h; h = max; } }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                try {
+                    await updateDoc(doc(db, 'users', auth.currentUser.uid), { photoURL: dataUrl });
+                    currentUserData.photoURL = dataUrl;
+                    // Update all avatars on page
+                    ['headerAvatar','postAvatar','sidebarAvatar'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                    });
+                    const profAv = document.getElementById('profilePageAvatar');
+                    if (profAv) profAv.innerHTML = `<img src="${dataUrl}" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">`;
+                } catch(err) { alert('Failed to update photo: ' + err.message); }
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
     };
 
-    function renderShareUserList(users, selected) {
-        const list = document.getElementById('shareUserList');
-        list.innerHTML = users.map(u =>
-            `<div class="share-user-item">
-                <input type="checkbox" id="shareCheck_${u.id}" value="${u.id}" ${selected.includes(u.id) ? 'checked' : ''}>
-                <div class="search-result-avatar" style="width:32px;height:32px;font-size:13px;">${(u.displayName||'U').charAt(0).toUpperCase()}</div>
-                <label for="shareCheck_${u.id}" style="font-size:14px;color:var(--text);cursor:pointer;">${escapeHtml(u.displayName||'')}</label>
-            </div>`
-        ).join('');
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── STORIES ──────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let storyTimer = null;
+    let currentStoryIndex = 0;
+    let currentStoryGroup = [];
+    let storyType = 'text';
+    let storyImageData = null;
+
+    async function loadStories() {
+        const bar = document.getElementById('storiesBar');
+        if (!bar) return;
+        try {
+            const snap = await getDocs(collection(db, 'stories'));
+            const now = Date.now();
+            // Group by userId, filter expired (>24h)
+            const active = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+                .filter(s => s.createdAt && (now - s.createdAt.toMillis()) < 24 * 60 * 60 * 1000);
+
+            // Group by user
+            const byUser = {};
+            active.forEach(s => {
+                if (!byUser[s.userId]) byUser[s.userId] = [];
+                byUser[s.userId].push(s);
+            });
+
+            // Get user info
+            const userIds = Object.keys(byUser);
+            let html = '';
+
+            // Always show "add your story" first
+            const myPhoto = currentUserData.photoURL || null;
+            const myInitial = currentUserData.displayName.charAt(0).toUpperCase();
+            const myHasStory = !!byUser[auth.currentUser.uid];
+            html += `<div class="story-bubble" onclick="openAddStoryModal()">
+                <div class="story-ring ${myHasStory ? '' : 'add'}" style="${myHasStory ? '' : 'background:linear-gradient(135deg,#667eea,#764ba2);'}">
+                    <div class="story-inner">
+                        ${myPhoto ? `<img src="${myPhoto}">` : `<span style="font-size:22px;font-weight:700;color:#667eea;">${myInitial}</span>`}
+                    </div>
+                </div>
+                <span class="story-name">Your story</span>
+            </div>`;
+
+            // Other users
+            for (const uid of userIds) {
+                if (uid === auth.currentUser.uid) continue;
+                if (blockedUsers.has(uid)) continue;
+                const userDoc = await getDoc(doc(db, 'users', uid));
+                if (!userDoc.exists()) continue;
+                const u = userDoc.data();
+                if (u.banned || u.tempBanned) continue;
+                const seen = seenStories.has(uid);
+                html += `<div class="story-bubble" onclick="viewStories('${uid}')">
+                    <div class="story-ring ${seen ? 'seen' : ''}">
+                        <div class="story-inner">
+                            ${u.photoURL ? `<img src="${u.photoURL}">` : `<span style="font-size:20px;font-weight:700;color:#667eea;">${(u.displayName||'U').charAt(0).toUpperCase()}</span>`}
+                        </div>
+                    </div>
+                    <span class="story-name">${escapeHtml(u.displayName||'')}</span>
+                </div>`;
+            }
+            bar.innerHTML = html;
+        } catch(e) { console.error('loadStories', e); }
     }
 
-    window.filterShareUsers = (q) => {
-        const filtered = shareAllUsers.filter(u => (u.displayName||'').toLowerCase().includes(q.toLowerCase()));
-        // preserve checked state by UID before re-render
-        const checkedUids = shareAllUsers.filter(u => {
-            const el = document.getElementById('shareCheck_' + u.id);
-            return el && el.checked;
-        }).map(u => u.id);
-        renderShareUserList(filtered, checkedUids);
-    };
+    const seenStories = new Set();
 
-    window.confirmShare = async () => {
-        const checked = shareAllUsers.filter(u => {
-            const el = document.getElementById('shareCheck_' + u.id);
-            return el && el.checked;
+    window.viewStories = (userId) => {
+        // Get all stories for this user
+        getDocs(collection(db, 'stories')).then(snap => {
+            const now = Date.now();
+            const stories = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+                .filter(s => s.userId === userId && s.createdAt && (now - s.createdAt.toMillis()) < 24*60*60*1000)
+                .sort((a,b) => a.createdAt.toMillis() - b.createdAt.toMillis());
+            if (!stories.length) return;
+            currentStoryGroup = stories;
+            currentStoryIndex = 0;
+            seenStories.add(userId);
+            showStory(0);
+            document.getElementById('storyViewer').classList.add('active');
         });
-        const selectedUids = checked.map(u => u.id);
-        const selectedNames = checked.map(u => u.displayName);
-        try {
-            // Get the post owner UID so they're always in visibleTo
-            const postSnap = await getDoc(doc(db, 'posts', sharePostId));
-            const ownerUid = postSnap.exists() ? postSnap.data().userId : auth.currentUser.uid;
-            // visibleTo = owner + all selected users (owner always included)
-            const visibleTo = [ownerUid, ...selectedUids.filter(uid => uid !== ownerUid)];
-            await updateDoc(doc(db, 'posts', sharePostId), {
-                visibleTo,
-                sharedWithNames: selectedNames
-            });
-            closeShareModal();
-        } catch(e) { alert('Failed to save: ' + e.message); }
     };
 
-    window.closeShareModal = () => {
-        document.getElementById('shareModal').classList.remove('active');
-        document.body.style.overflow = 'auto';
-        sharePostId = null;
+    function showStory(idx) {
+        if (idx >= currentStoryGroup.length) { closeStoryViewer(); return; }
+        clearTimeout(storyTimer);
+        const story = currentStoryGroup[idx];
+        const viewer = document.getElementById('storyViewerContent');
+        const isOwn = story.userId === auth.currentUser.uid;
+
+        document.getElementById('storyDeleteBtn').style.display = isOwn || isAdmin ? 'block' : 'none';
+        document.getElementById('storyViewerName').textContent = story.userName || '';
+        document.getElementById('storyViewerTime').textContent = story.createdAt ? getTimeAgo(story.createdAt.toDate()) : '';
+
+        // Avatar
+        const avEl = document.getElementById('storyViewerAvatar');
+        if (story.userPhoto) avEl.innerHTML = `<img src="${story.userPhoto}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">`;
+        else avEl.textContent = (story.userName||'U').charAt(0).toUpperCase();
+
+        if (story.type === 'image' && story.image) {
+            viewer.innerHTML = `<img src="${story.image}" class="story-viewer-img">`;
+        } else {
+            viewer.innerHTML = `<div class="story-viewer-text">${escapeHtml(story.text||'')}</div>`;
+        }
+
+        // Progress bars
+        const bars = document.getElementById('storyProgressBars');
+        bars.innerHTML = currentStoryGroup.map((_, i) =>
+            `<div class="story-progress"><div class="story-progress-fill" id="prog_${i}" style="width:${i < idx ? '100' : '0'}%"></div></div>`
+        ).join('');
+        setTimeout(() => {
+            const bar = document.getElementById('prog_' + idx);
+            if (bar) bar.style.width = '100%';
+        }, 50);
+
+        storyTimer = setTimeout(() => showStory(idx + 1), 5000);
+    }
+
+    window.closeStoryViewer = () => {
+        clearTimeout(storyTimer);
+        document.getElementById('storyViewer').classList.remove('active');
+        loadStories();
     };
-    window.closeShareIfOutside = (e) => { if (e.target.id === 'shareModal') closeShareModal(); };
+
+    window.deleteCurrentStory = async () => {
+        const story = currentStoryGroup[currentStoryIndex];
+        if (!story) return;
+        if (!confirm('Delete this story?')) return;
+        try {
+            await deleteDoc(doc(db, 'stories', story.id));
+            currentStoryGroup.splice(currentStoryIndex, 1);
+            if (currentStoryGroup.length === 0) { closeStoryViewer(); }
+            else { showStory(Math.min(currentStoryIndex, currentStoryGroup.length - 1)); }
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    window.openAddStoryModal = () => {
+        // If they have stories, view them; add button is inside
+        if (document.getElementById('addStoryModal'))
+            document.getElementById('addStoryModal').classList.add('active');
+    };
+    window.closeAddStoryModal = () => document.getElementById('addStoryModal').classList.remove('active');
+    window.closeAddStoryIfOutside = (e) => { if (e.target.id === 'addStoryModal') closeAddStoryModal(); };
+
+    window.setStoryType = (type) => {
+        storyType = type;
+        document.getElementById('storyTextInput').style.display = type === 'text' ? 'block' : 'none';
+        document.getElementById('storyImageInput').style.display = type === 'image' ? 'block' : 'none';
+        document.getElementById('storyTypeText').style.background = type === 'text' ? '#667eea' : 'transparent';
+        document.getElementById('storyTypeText').style.color = type === 'text' ? 'white' : 'var(--text)';
+        document.getElementById('storyTypeImage').style.background = type === 'image' ? '#667eea' : 'transparent';
+        document.getElementById('storyTypeImage').style.color = type === 'image' ? 'white' : 'var(--text)';
+    };
+
+    window.previewStoryImage = (input) => {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            storyImageData = e.target.result;
+            const prev = document.getElementById('storyImagePreview');
+            prev.src = storyImageData; prev.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    };
+
+    window.postStory = async () => {
+        const data = {
+            userId: auth.currentUser.uid,
+            userName: currentUserData.displayName,
+            userPhoto: currentUserData.photoURL || null,
+            type: storyType,
+            createdAt: serverTimestamp()
+        };
+        if (storyType === 'text') {
+            const text = document.getElementById('storyTextarea').value.trim();
+            if (!text) { alert('Write something for your story.'); return; }
+            data.text = text;
+        } else {
+            if (!storyImageData) { alert('Please choose a photo.'); return; }
+            data.image = storyImageData;
+        }
+        try {
+            await addDoc(collection(db, 'stories'), data);
+            closeAddStoryModal();
+            storyImageData = null;
+            document.getElementById('storyTextarea').value = '';
+            loadStories();
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── BLOCK USER ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let blockedUsers = new Set();
+
+    async function loadBlockedUsers() {
+        try {
+            const d = await getDoc(doc(db, 'users', auth.currentUser.uid));
+            if (d.exists()) blockedUsers = new Set(d.data().blockedUsers || []);
+        } catch(_) {}
+    }
+
+    window.toggleBlockUser = async () => {
+        if (!currentViewingUserId) return;
+        const uid = currentViewingUserId;
+        const isBlocked = blockedUsers.has(uid);
+        if (!isBlocked) {
+            if (!confirm("Block this user? You won't see their posts and they can't interact with you.")) return;
+        }
+        try {
+            if (isBlocked) {
+                await updateDoc(doc(db, 'users', auth.currentUser.uid), { blockedUsers: arrayRemove(uid) });
+                blockedUsers.delete(uid);
+            } else {
+                await updateDoc(doc(db, 'users', auth.currentUser.uid), { blockedUsers: arrayUnion(uid) });
+                blockedUsers.add(uid);
+                // Unfollow them if following
+                const followId = auth.currentUser.uid + '_' + uid;
+                const fSnap = await getDoc(doc(db, 'follows', followId));
+                if (fSnap.exists()) await deleteDoc(doc(db, 'follows', followId));
+            }
+            // Update button
+            const btn = document.getElementById('blockBtn');
+            if (btn) {
+                btn.textContent = isBlocked ? '🚫 Block' : '✓ Blocked';
+                btn.classList.toggle('blocked', !isBlocked);
+            }
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── POLLS ────────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let pollActive = false;
+
+    window.togglePollComposer = () => {
+        pollActive = !pollActive;
+        const container = document.getElementById('pollComposerContainer');
+        const btn = document.getElementById('pollToggleBtn');
+        if (pollActive) {
+            btn.style.color = '#667eea';
+            container.innerHTML = `
+                <div class="poll-composer">
+                    <input class="poll-composer-question" id="pollQuestion" placeholder="Ask a question..." maxlength="200">
+                    <div id="pollOptionsList">
+                        <input class="poll-option-input" placeholder="Option 1" id="pollOpt_0">
+                        <input class="poll-option-input" placeholder="Option 2" id="pollOpt_1">
+                    </div>
+                    <button class="poll-add-option-btn" onclick="addPollOption()">+ Add Option</button>
+                </div>`;
+            document.getElementById('postButton').disabled = false;
+        } else {
+            btn.style.color = '';
+            container.innerHTML = '';
+        }
+    };
+
+    let pollOptionCount = 2;
+    window.addPollOption = () => {
+        if (pollOptionCount >= 4) { alert('Max 4 options'); return; }
+        const list = document.getElementById('pollOptionsList');
+        const inp = document.createElement('input');
+        inp.className = 'poll-option-input';
+        inp.placeholder = 'Option ' + (pollOptionCount + 1);
+        inp.id = 'pollOpt_' + pollOptionCount;
+        list.appendChild(inp);
+        pollOptionCount++;
+    };
+
+    function buildPollData() {
+        if (!pollActive) return null;
+        const question = (document.getElementById('pollQuestion')?.value || '').trim();
+        if (!question) return null;
+        const options = [];
+        for (let i = 0; i < pollOptionCount; i++) {
+            const val = (document.getElementById('pollOpt_' + i)?.value || '').trim();
+            if (val) options.push({ text: val, votes: [] });
+        }
+        if (options.length < 2) return null;
+        return { question, options };
+    }
+
+    function renderPoll(poll, postId, ownerId) {
+        if (!poll || !poll.options) return '';
+        const totalVotes = poll.options.reduce((s, o) => s + (o.votes?.length || 0), 0);
+        const myVote = poll.options.findIndex(o => o.votes?.includes(auth.currentUser?.uid));
+        const hasVoted = myVote >= 0;
+        const canClose = ownerId === auth.currentUser?.uid;
+        const isClosed = !!poll.closed;
+
+        const optionsHtml = poll.options.map((opt, i) => {
+            const count = opt.votes?.length || 0;
+            const pct = totalVotes > 0 ? Math.round(count / totalVotes * 100) : 0;
+            const isWinner = hasVoted && count === Math.max(...poll.options.map(o => o.votes?.length || 0));
+            const isMyVote = myVote === i;
+            return `<div class="poll-option ${hasVoted||isClosed ? 'voted' : ''} ${isWinner&&hasVoted ? 'winner' : ''}"
+                onclick="${!hasVoted && !isClosed ? `window.votePoll('${postId}', ${i})` : ''}">
+                <div class="poll-option-fill" style="width:${hasVoted||isClosed ? pct : 0}%"></div>
+                <div class="poll-option-content">
+                    <span>${escapeHtml(opt.text)} ${isMyVote ? '✓' : ''}</span>
+                    ${hasVoted||isClosed ? `<span class="poll-vote-pct">${pct}%</span>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+
+        return `<div class="poll-container" style="padding:0 16px 12px;">
+            <div class="poll-question">${escapeHtml(poll.question)}</div>
+            ${optionsHtml}
+            <div class="poll-total">${totalVotes} vote${totalVotes !== 1 ? 's' : ''} ${isClosed ? '· Closed' : ''}</div>
+            ${canClose && !isClosed ? `<button onclick="window.closePoll('${postId}')" style="font-size:11px;color:var(--text-sub);background:none;border:none;cursor:pointer;margin-top:4px;">End poll</button>` : ''}
+        </div>`;
+    }
+
+    window.votePoll = async (postId, optionIndex) => {
+        try {
+            const ref = doc(db, 'posts', postId);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) return;
+            const poll = snap.data().poll;
+            // Add vote to chosen option
+            poll.options[optionIndex].votes = [...(poll.options[optionIndex].votes || []), auth.currentUser.uid];
+            await updateDoc(ref, { poll });
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    window.closePoll = async (postId) => {
+        try {
+            const ref = doc(db, 'posts', postId);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) return;
+            const poll = snap.data().poll;
+            poll.closed = true;
+            await updateDoc(ref, { poll });
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── USER WARNINGS ────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    window.issueWarning = async (userId, userName) => {
+        const reason = prompt(`Issue a warning to ${userName}.
+
+Reason (shown to the user):`);
+        if (!reason || !reason.trim()) return;
+        try {
+            const warnRef = doc(collection(db, 'warnings'));
+            await setDoc(warnRef, {
+                userId, userName, reason: reason.trim(),
+                issuedBy: auth.currentUser.uid,
+                issuedAt: serverTimestamp(), read: false
+            });
+            // Bump warning count on user
+            await updateDoc(doc(db, 'users', userId), { warningCount: increment(1) });
+            // Notification to user
+            await addDoc(collection(db, 'notifications'), {
+                userId, fromUserId: auth.currentUser.uid,
+                fromUserName: 'Admin', fromUserInitial: 'A',
+                type: 'warning', reason: reason.trim(),
+                read: false, createdAt: serverTimestamp(), timestamp: Date.now()
+            });
+            addAdminLog('Issued warning to ' + userName + ': ' + reason.trim());
+            alert('⚠️ Warning issued to ' + userName);
+            await loadAdminUsers();
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // ── IP / DEVICE BAN ──────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Generate a stable fingerprint on load and store with user record
+    async function registerDeviceFingerprint() {
+        try {
+            const fp = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 0,
+                navigator.platform || ''
+            ].join('|');
+            const hash = btoa(fp).replace(/=/g,'').slice(0,32);
+            // Check if this device fingerprint is banned
+            const banSnap = await getDoc(doc(db, 'deviceBans', hash));
+            if (banSnap.exists()) {
+                // This device is banned — sign out and show message
+                await signOut(auth);
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainContainer').classList.remove('active');
+                document.getElementById('loginError').textContent = '🚫 This device has been banned.';
+                return;
+            }
+            // Store fingerprint on user
+            if (auth.currentUser) {
+                await updateDoc(doc(db, 'users', auth.currentUser.uid), { deviceFingerprint: hash });
+            }
+        } catch(_) {}
+    }
+
+    window.banUserDevice = async (userId, userName) => {
+        if (!confirm("Ban " + userName + "'s device? This will prevent any account from that browser/device.")) return;
+        try {
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            if (!userDoc.exists()) { alert('User not found'); return; }
+            const fp = userDoc.data().deviceFingerprint;
+            if (!fp) { alert('No device fingerprint on record for this user yet. They need to log in first.'); return; }
+            await setDoc(doc(db, 'deviceBans', fp), {
+                userId, userName,
+                bannedBy: auth.currentUser.uid,
+                bannedAt: serverTimestamp()
+            });
+            addAdminLog('Device banned: ' + userName + ' (fp: ' + fp + ')');
+            alert('📵 Device banned for ' + userName);
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
+
+    window.unbanUserDevice = async (userId, userName) => {
+        try {
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            if (!userDoc.exists()) return;
+            const fp = userDoc.data().deviceFingerprint;
+            if (!fp) { alert('No fingerprint on record.'); return; }
+            await deleteDoc(doc(db, 'deviceBans', fp));
+            addAdminLog('Device ban lifted for ' + userName);
+            alert('✅ Device ban lifted for ' + userName);
+        } catch(e) { alert('Failed: ' + e.message); }
+    };
 
         // ─────────────────────────────────────────────────────────────────────────
     // ── SUB-ADMIN SYSTEM ─────────────────────────────────────────────────────
@@ -2616,16 +3207,36 @@
             updateMyPresence();
             setInterval(updateMyPresence, 60000);
             setTimeout(setupMentionDetection, 500);
+            await loadBlockedUsers();
+            await registerDeviceFingerprint();
+            loadStories();
+            setInterval(loadStories, 60000);
             } else { hideAdminUI(); }
 
             // Load admin roster for badge rendering
             await loadKnownAdmins();
 
             const initial = userData.displayName.charAt(0).toUpperCase();
-            document.getElementById('headerAvatar').textContent = initial;
-            document.getElementById('postAvatar').textContent = initial;
-            document.getElementById('sidebarAvatar').textContent = initial;
+            const pfp = userData.photoURL || null;
+            // Set all avatar elements
+            ['headerAvatar','postAvatar','sidebarAvatar'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (pfp) { el.innerHTML = `<img src="${pfp}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; }
+                else { el.textContent = initial; }
+            });
             document.getElementById('profileName').textContent = userData.displayName;
+            // Show warning banner if user has active warnings
+            if ((userData.warningCount || 0) > 0) {
+                const existing = document.getElementById('sidebarWarnBanner');
+                if (!existing) {
+                    const banner = document.createElement('div');
+                    banner.id = 'sidebarWarnBanner';
+                    banner.className = 'warning-banner';
+                    banner.innerHTML = '⚠️ You have ' + userData.warningCount + ' admin warning' + (userData.warningCount > 1 ? 's' : '');
+                    document.querySelector('.profile-card').prepend(banner);
+                }
+            }
             document.getElementById('profilePhone').textContent = userData.phoneId || '';
             document.getElementById('postsCount').textContent = userData.postsCount || 0;
             document.getElementById('followersCount').textContent = userData.followersCount || 0;
