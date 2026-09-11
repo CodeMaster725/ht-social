@@ -108,6 +108,8 @@
         .btn-view:hover { background: rgba(255,255,255,0.2); }
         .btn-delete-posts { background: #e67e22; color: white; }
         .btn-delete-posts:hover { background: #ca6f1e; }
+        .btn-delete-account { background: #b71c1c; color: white; }
+        .btn-delete-account:hover { background: #8e0000; }
         .btn-promote { background: #9b59b6; color: white; }
         .btn-promote:hover { background: #8e44ad; }
         .banned-badge { background: #ed4956; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
@@ -709,6 +711,7 @@
                         <div class="admin-stat-card"><div class="admin-stat-num" id="adminStatBanned">—</div><div class="admin-stat-label">Banned Users</div></div>
                     </div>
                     <p style="color:rgba(255,255,255,0.4); font-size:13px; text-align:center; margin-top:8px;">You have full administrative control over HT Social.</p>
+                    <p style="color:rgba(255,255,255,0.35); font-size:11px; text-align:center; margin-top:6px;">Delete Account removes Firestore data and posts. Full Firebase Authentication deletion requires a trusted Admin SDK backend.</p>
                 </div>
                 <div class="admin-section" id="adminSectionUsers">
                     <input type="text" class="admin-search-input" placeholder="🔍  Search users..." oninput="filterAdminUsers(this.value)">
@@ -984,18 +987,68 @@
         catch (e) { alert('Login failed: ' + e.message); }
     };
 
+    // ── Registration/IP limit ────────────────────────────────────────────────
+    // Only a SHA-256 hash of the public IP is stored in Firestore.
+    async function getRegistrationIPHash() {
+        const response = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Could not determine your IP address.');
+        const { ip } = await response.json();
+        if (!ip) throw new Error('Could not determine your IP address.');
+
+        const digest = await crypto.subtle.digest(
+            'SHA-256',
+            new TextEncoder().encode(ip)
+        );
+        return Array.from(new Uint8Array(digest))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
+
     window.signup = async () => {
         const name = document.getElementById('signupName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
         const password = document.getElementById('signupPassword').value;
         if (!name || !email || !password) { alert('Please fill all fields'); return; }
         if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
-        const phoneId = '+1' + Math.floor(Math.random() * 9000000000 + 1000000000);
+
+        let ipHash;
         try {
-            const uc = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, 'users', uc.user.uid), { displayName: name, phoneId, email, createdAt: serverTimestamp(), postsCount: 0, followersCount: 0, followingCount: 0, banned: false });
+            ipHash = await getRegistrationIPHash();
+            const ipLock = await getDoc(doc(db, 'registrationLocks', ipHash));
+            if (ipLock.exists()) {
+                alert('Only one account can be created from this IP address.');
+                return;
+            }
+        } catch (e) {
+            alert('Signup could not verify your IP address. Please try again.');
+            return;
+        }
+
+        const phoneId = '+1' + Math.floor(Math.random() * 9000000000 + 1000000000);
+        let uc = null;
+        try {
+            uc = await createUserWithEmailAndPassword(auth, email, password);
+
+            await setDoc(doc(db, 'users', uc.user.uid), {
+                displayName: name, phoneId, email,
+                createdAt: serverTimestamp(),
+                postsCount: 0, followersCount: 0, followingCount: 0,
+                banned: false, registrationIPHash: ipHash
+            });
+
+            // Keep this lock after account deletion so the IP cannot register again.
+            await setDoc(doc(db, 'registrationLocks', ipHash), {
+                uid: uc.user.uid,
+                createdAt: serverTimestamp()
+            });
+
             alert('Account created!\n\nPhone ID: ' + phoneId);
-        } catch (e) { alert(e.code === 'auth/email-already-in-use' ? 'Email already registered.' : 'Signup failed: ' + e.message); }
+        } catch (e) {
+            if (uc && auth.currentUser && auth.currentUser.uid === uc.user.uid) {
+                try { await uc.user.delete(); } catch (_) {}
+            }
+            alert(e.code === 'auth/email-already-in-use' ? 'Email already registered.' : 'Signup failed: ' + e.message);
+        }
     };
 
     window.logout = () => {
@@ -1898,6 +1951,37 @@
         } catch (e) { alert('Failed to delete post: ' + e.message); }
     };
 
+    window.adminDeleteAccount = async (userId, userName) => {
+        if (userId === ADMIN_UID) {
+            alert('The main admin account cannot be deleted from this panel.');
+            return;
+        }
+        if (!confirm(`Delete ${userName}'s account and all of its posts? This cannot be undone.`)) return;
+        if (!confirm(`Final confirmation: permanently delete ${userName}'s account data?`)) return;
+
+        try {
+            const postsSnap = await getDocs(
+                query(collection(db, 'posts'), where('userId', '==', userId))
+            );
+
+            const batch = writeBatch(db);
+            postsSnap.docs.forEach(p => batch.delete(p.ref));
+            batch.delete(doc(db, 'users', userId));
+            await batch.commit();
+
+            adminAllUsers = adminAllUsers.filter(u => u.id !== userId);
+            const row = document.getElementById(`adminUserRow_${userId}`);
+            if (row) row.remove();
+
+            addAdminLog(`Deleted account data for ${userName} (${userId})`);
+            await loadAdminOverview();
+
+            alert('Account data deleted. Firebase Authentication accounts require a trusted Admin SDK backend for full deletion.');
+        } catch (e) {
+            alert('Failed to delete account: ' + e.message);
+        }
+    };
+
     window.adminDeleteComment = async (commentId, postId) => {
         if (!confirm('Delete this comment?')) return;
         try {
@@ -2126,6 +2210,7 @@
                        <button class="admin-action-btn btn-temp-ban" onclick="adminTempBanUser('${u.id}')">⏳ Temp Ban</button>
                        <button class="admin-action-btn btn-ban" onclick="adminToggleBan('${u.id}', false)">🚫 Perm Ban</button>`}
                     <button class="admin-action-btn btn-delete-posts" onclick="adminDeleteAllPostsByUser('${u.id}', '${escapeHtml(u.displayName || 'User')}')">💣 Nuke Posts</button>
+                    <button class="admin-action-btn btn-delete-account" onclick="adminDeleteAccount('${u.id}', '${escapeHtml(u.displayName || 'User')}')">🗑 Delete Account</button>
                 </div>` : ''}
             </div>`;
         }).join('');
