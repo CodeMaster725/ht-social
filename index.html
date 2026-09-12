@@ -944,7 +944,7 @@
 
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, sendPasswordResetEmail, reload, getIdTokenResult } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, sendPasswordResetEmail, reload } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
     import { getFirestore, collection, addDoc, query, where, onSnapshot, orderBy, getDocs, setDoc, doc, getDoc, updateDoc, serverTimestamp, deleteDoc, arrayUnion, arrayRemove, increment, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -961,11 +961,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
-    // Firebase App Check is intentionally not initialized here. This version
-    // avoids Google Cloud / billing setup and relies on Firebase Auth plus
-    // Firestore Security Rules for access control. Never put service-account
-    // credentials or other private keys in this file.
 
     let selectedImage = null;
     let currentUserData = null;
@@ -1184,16 +1179,40 @@
         document.querySelector('.content').style.display = '';
     };
 
+    // Update the cached author fields on every post made by this user.
+    // This keeps older posts in sync when the profile name/photo changes.
+    async function updateAuthorOnAllPosts(userId, fields) {
+        const snap = await getDocs(query(collection(db, 'posts'), where('userId', '==', userId)));
+        const refs = snap.docs.map(d => d.ref);
+        // Firestore batches support up to 500 writes; stay below the limit.
+        for (let i = 0; i < refs.length; i += 400) {
+            const batch = writeBatch(db);
+            refs.slice(i, i + 400).forEach(ref => batch.update(ref, fields));
+            await batch.commit();
+        }
+    }
+
     window.saveSettingsProfile = async () => {
         if (!auth.currentUser) return;
         const displayName = document.getElementById('settingsDisplayName').value.trim();
         const bio = document.getElementById('settingsBio').value.trim();
         if (!displayName) { alert('Display name cannot be empty.'); return; }
         try {
+            const oldName = currentUserData?.displayName || '';
             await updateDoc(doc(db, 'users', auth.currentUser.uid), { displayName, bio });
             currentUserData.displayName = displayName;
             currentUserData.bio = bio;
             document.getElementById('profileName').textContent = displayName;
+
+            // Keep the author name on all existing posts synchronized.
+            if (displayName !== oldName) {
+                await updateAuthorOnAllPosts(auth.currentUser.uid, {
+                    userName: displayName,
+                    userInitial: displayName.charAt(0).toUpperCase()
+                });
+                await showFeed();
+            }
+
             document.getElementById('settingsProfileStatus').textContent = 'Profile saved.';
             setTimeout(() => { document.getElementById('settingsProfileStatus').textContent = ''; }, 2500);
         } catch (e) { alert('Could not save profile: ' + e.message); }
@@ -2743,6 +2762,10 @@
                 try {
                     await updateDoc(doc(db, 'users', auth.currentUser.uid), { photoURL: dataUrl });
                     currentUserData.photoURL = dataUrl;
+
+                    // Keep the profile picture stored on all existing posts in sync.
+                    await updateAuthorOnAllPosts(auth.currentUser.uid, { userPhoto: dataUrl });
+
                     // Update all avatars on page
                     ['headerAvatar','postAvatar','sidebarAvatar'].forEach(id => {
                         const el = document.getElementById(id);
@@ -3438,22 +3461,11 @@ Reason (shown to the user):`);
             }
 
             currentUserData = userData;
-
-            // Security-friendly admin detection: keep the existing main-admin UID
-            // as the no-Cloud-Console fallback, while also accepting a Firebase
-            // custom claim if one is added later. No secret or service-account
-            // credentials are stored in this client.
-            let hasAdminClaim = false;
-            try {
-                const tokenResult = await getIdTokenResult(user, true);
-                hasAdminClaim = tokenResult.claims.admin === true;
-            } catch (_) {}
-
             isMainAdmin = user.uid === ADMIN_UID;
-            isAdmin = isMainAdmin || hasAdminClaim;
+            isAdmin = isMainAdmin;
 
             // Check if this user is a sub-admin
-            if (!isMainAdmin && !hasAdminClaim) {
+            if (!isMainAdmin) {
                 try {
                     const adminsDoc = await getDoc(doc(db, 'config', 'admins'));
                     if (adminsDoc.exists() && adminsDoc.data()[user.uid]) {
@@ -3461,13 +3473,8 @@ Reason (shown to the user):`);
                         currentAdminPerms = adminsDoc.data()[user.uid].permissions || {};
                     }
                 } catch(_) {}
-            } else if (isMainAdmin) {
+            } else {
                 currentAdminPerms = { deletePosts: true, deleteComments: true, banUsers: true, tempBan: true, resolveReports: true, announce: true };
-            } else if (hasAdminClaim) {
-                // A custom-claim admin is recognized, but does not automatically
-                // receive every moderation permission. Those permissions remain
-                // controlled by the protected config/admins document.
-                currentAdminPerms = {};
             }
 
             if (isAdmin) {
