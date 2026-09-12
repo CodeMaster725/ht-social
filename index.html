@@ -1081,8 +1081,26 @@
         }
     };
 
-    // ── Registration/IP limit ────────────────────────────────────────────────
-    // Only a SHA-256 hash of the public IP is stored in Firestore.
+    // ── Registration/IP + device limit ──────────────────────────────────────
+    // IP-only limits are easy to bypass with a VPN. We also keep a stable
+    // browser/device registration fingerprint and a local one-account marker.
+    async function getRegistrationDeviceHash() {
+        const parts = [
+            navigator.userAgent || '',
+            navigator.language || '',
+            screen.width + 'x' + screen.height,
+            screen.colorDepth || 0,
+            new Date().getTimezoneOffset(),
+            navigator.hardwareConcurrency || 0,
+            navigator.platform || '',
+            navigator.maxTouchPoints || 0
+        ].join('|');
+        const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(parts));
+        return Array.from(new Uint8Array(digest))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
+
     async function getRegistrationIPHash() {
         const response = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
         if (!response.ok) throw new Error('Could not determine your IP address.');
@@ -1105,16 +1123,32 @@
         if (!name || !email || !password) { alert('Please fill all fields'); return; }
         if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
 
-        let ipHash;
+        // Block repeat registrations from the same browser/device even when
+        // the person changes IP addresses with a VPN.
+        const localRegistrationClaim = localStorage.getItem('htSocialRegistrationClaim');
+        if (localRegistrationClaim === 'claimed') {
+            alert('Only one account can be created from this browser/device.');
+            return;
+        }
+
+        let ipHash, deviceHash;
         try {
+            deviceHash = await getRegistrationDeviceHash();
+            const deviceLock = await getDoc(doc(db, 'registrationLocks', 'device_' + deviceHash));
+            if (deviceLock.exists()) {
+                localStorage.setItem('htSocialRegistrationClaim', 'claimed');
+                alert('Only one account can be created from this browser/device. A VPN cannot bypass this limit.');
+                return;
+            }
+
             ipHash = await getRegistrationIPHash();
-            const ipLock = await getDoc(doc(db, 'registrationLocks', ipHash));
+            const ipLock = await getDoc(doc(db, 'registrationLocks', 'ip_' + ipHash));
             if (ipLock.exists()) {
                 alert('Only one account can be created from this IP address.');
                 return;
             }
         } catch (e) {
-            alert('Signup could not verify your IP address. Please try again.');
+            alert('Signup could not verify the registration limit. Please try again.');
             return;
         }
 
@@ -1128,16 +1162,24 @@
                 createdAt: serverTimestamp(),
                 postsCount: 0, followersCount: 0, followingCount: 0,
                 banned: false, registrationIPHash: ipHash,
+                registrationDeviceHash: deviceHash,
                 emailVerified: false
             });
 
             await sendEmailVerification(uc.user);
 
             // Keep this lock after account deletion so the IP cannot register again.
-            await setDoc(doc(db, 'registrationLocks', ipHash), {
+            await setDoc(doc(db, 'registrationLocks', 'ip_' + ipHash), {
                 uid: uc.user.uid,
+                type: 'ip',
                 createdAt: serverTimestamp()
             });
+            await setDoc(doc(db, 'registrationLocks', 'device_' + deviceHash), {
+                uid: uc.user.uid,
+                type: 'device',
+                createdAt: serverTimestamp()
+            });
+            localStorage.setItem('htSocialRegistrationClaim', 'claimed');
 
             await signOut(auth);
             alert('Account created!\n\nA verification email was sent to ' + email + '. Verify your email before signing in.\n\nPhone ID: ' + phoneId);
