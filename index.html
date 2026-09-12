@@ -345,6 +345,32 @@
         .empty-feed h3 { font-size: 22px; color: #262626; margin-bottom: 8px; }
         .empty-feed p { color: #8e8e8e; font-size: 14px; }
 
+
+        .settings-page { display:none; max-width:760px; margin:32px auto; padding:0 20px; }
+        .settings-page.active { display:block; }
+        .settings-header { margin-bottom:20px; }
+        .settings-header h2 { font-size:28px; margin-bottom:6px; }
+        .settings-header p { color:var(--text-sub); font-size:14px; }
+        .settings-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px; margin-bottom:16px; }
+        .settings-card h3 { font-size:17px; margin-bottom:6px; }
+        .settings-card > p { color:var(--text-sub); font-size:13px; margin-bottom:16px; line-height:1.4; }
+        .settings-label { display:block; font-size:13px; font-weight:600; margin:14px 0 7px; }
+        .settings-input, .settings-textarea { width:100%; padding:11px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text); font:inherit; outline:none; }
+        .settings-textarea { min-height:90px; resize:vertical; }
+        .settings-input:focus, .settings-textarea:focus { border-color:#667eea; }
+        .settings-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+        .settings-btn { border:none; border-radius:8px; padding:10px 15px; font-weight:600; cursor:pointer; }
+        .settings-btn.primary { background:#667eea; color:white; }
+        .settings-btn.secondary { background:var(--hover); color:var(--text); border:1px solid var(--border); }
+        .settings-btn.danger { background:#ed4956; color:white; }
+        .settings-status { margin-top:10px; font-size:13px; color:#2e7d32; }
+        .security-row { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:13px 0; border-top:1px solid var(--border); }
+        .security-row:first-of-type { border-top:0; }
+        .security-row strong { display:block; font-size:14px; margin-bottom:3px; }
+        .security-row span { color:var(--text-sub); font-size:12px; }
+        .verified-badge { color:#2e7d32; font-weight:700; }
+        .settings-back { background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:9px 13px; cursor:pointer; margin-bottom:18px; }
+
         .profile-page { display: none; max-width: 975px; margin: 32px auto; padding: 0 20px; }
         .profile-page.active { display: block; }
         .profile-header { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin-bottom: 24px; }
@@ -651,6 +677,7 @@
             <div class="header-icons">
                 <button class="icon-btn" onclick="scrollToTop()">🏠</button>
                 <button class="dark-toggle" id="darkToggleBtn" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+                <button class="icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
                 <button class="icon-btn" onclick="window.location.href='https://codemaster725.github.io/ht-messages/'">💬</button>
                 <div class="icon-btn-wrapper">
                     <button class="icon-btn" onclick="toggleNotifications()">🔔</button>
@@ -764,6 +791,43 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div class="settings-page" id="settingsPage">
+        <button class="settings-back" onclick="closeSettings()">← Back to Feed</button>
+        <div class="settings-header">
+            <h2>Settings</h2>
+            <p>Manage your HT Social profile, appearance, and account security.</p>
+        </div>
+        <div class="settings-card">
+            <h3>👤 Profile</h3>
+            <p>Update the information other HT Social users see on your profile.</p>
+            <label class="settings-label" for="settingsDisplayName">Display Name</label>
+            <input class="settings-input" id="settingsDisplayName" maxlength="40" placeholder="Display Name">
+            <label class="settings-label" for="settingsBio">Bio</label>
+            <textarea class="settings-textarea" id="settingsBio" maxlength="160" placeholder="Tell people a little about yourself..."></textarea>
+            <div class="settings-actions"><button class="settings-btn primary" onclick="saveSettingsProfile()">Save Profile</button></div>
+            <div class="settings-status" id="settingsProfileStatus"></div>
+        </div>
+        <div class="settings-card">
+            <h3>🎨 Appearance</h3>
+            <p>Choose how HT Social looks on this device.</p>
+            <div class="settings-actions"><button class="settings-btn secondary" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button></div>
+        </div>
+        <div class="settings-card">
+            <h3>🔐 Security</h3>
+            <p>Firebase handles your authentication and account recovery.</p>
+            <div class="security-row"><div><strong>Email</strong><span id="settingsEmail">—</span></div><span id="settingsVerificationStatus">Checking...</span></div>
+            <div class="security-row"><div><strong>Password</strong><span>Send a secure Firebase password-reset email.</span></div><button class="settings-btn secondary" onclick="settingsResetPassword()">Reset Password</button></div>
+            <div class="security-row" id="settingsVerifyRow"><div><strong>Email verification</strong><span>Verified email helps protect your account.</span></div><button class="settings-btn secondary" onclick="settingsSendVerification()">Send Verification Email</button></div>
+            <div class="settings-status" id="settingsSecurityStatus"></div>
+        </div>
+        <div class="settings-card">
+            <h3>🚪 Account</h3>
+            <p>Sign out of HT Social on this device.</p>
+            <div class="settings-actions"><button class="settings-btn danger" onclick="logout()">Sign Out</button></div>
         </div>
     </div>
 
@@ -1090,6 +1154,60 @@
     };
     window.showSignup = () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('signupForm').style.display = 'block'; };
     window.showLogin = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('signupForm').style.display = 'none'; };
+
+    // ── Settings ──────────────────────────────────────────────────────────────
+    window.openSettings = async () => {
+        if (!auth.currentUser) return;
+        document.getElementById('profilePage').classList.remove('active');
+        document.querySelector('.content').style.display = 'none';
+        document.getElementById('settingsPage').classList.add('active');
+        document.getElementById('settingsDisplayName').value = currentUserData?.displayName || '';
+        document.getElementById('settingsBio').value = currentUserData?.bio || '';
+        document.getElementById('settingsEmail').textContent = auth.currentUser.email || '—';
+        try { await reload(auth.currentUser); } catch (_) {}
+        const verified = auth.currentUser.emailVerified || auth.currentUser.uid === ADMIN_UID;
+        const status = document.getElementById('settingsVerificationStatus');
+        status.textContent = verified ? '✓ Verified' : 'Not verified';
+        status.className = verified ? 'verified-badge' : '';
+        document.getElementById('settingsVerifyRow').style.display = verified ? 'none' : 'flex';
+    };
+
+    window.closeSettings = () => {
+        document.getElementById('settingsPage').classList.remove('active');
+        document.querySelector('.content').style.display = '';
+    };
+
+    window.saveSettingsProfile = async () => {
+        if (!auth.currentUser) return;
+        const displayName = document.getElementById('settingsDisplayName').value.trim();
+        const bio = document.getElementById('settingsBio').value.trim();
+        if (!displayName) { alert('Display name cannot be empty.'); return; }
+        try {
+            await updateDoc(doc(db, 'users', auth.currentUser.uid), { displayName, bio });
+            currentUserData.displayName = displayName;
+            currentUserData.bio = bio;
+            document.getElementById('profileName').textContent = displayName;
+            document.getElementById('settingsProfileStatus').textContent = 'Profile saved.';
+            setTimeout(() => { document.getElementById('settingsProfileStatus').textContent = ''; }, 2500);
+        } catch (e) { alert('Could not save profile: ' + e.message); }
+    };
+
+    window.settingsResetPassword = async () => {
+        const email = auth.currentUser?.email;
+        if (!email) return;
+        try {
+            await sendPasswordResetEmail(auth, email);
+            document.getElementById('settingsSecurityStatus').textContent = 'Password reset email sent to ' + email + '.';
+        } catch (e) { alert('Could not send password reset email: ' + e.message); }
+    };
+
+    window.settingsSendVerification = async () => {
+        if (!auth.currentUser) return;
+        try {
+            await sendEmailVerification(auth.currentUser);
+            document.getElementById('settingsSecurityStatus').textContent = 'Verification email sent. Check your inbox.';
+        } catch (e) { alert('Could not send verification email: ' + e.message); }
+    };
 
     // ── Post creation ─────────────────────────────────────────────────────────
 
@@ -3375,6 +3493,8 @@ Reason (shown to the user):`);
 
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainContainer').classList.add('active');
+            document.getElementById('settingsPage').classList.remove('active');
+            document.querySelector('.content').style.display = '';
 
             // Reset to For You feed on login
             currentFeedMode = 'forYou';
