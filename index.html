@@ -658,6 +658,14 @@
             <button onclick="signup()">Create Account</button>
             <button class="secondary-btn" onclick="showLogin()">Back to Sign In</button>
         </div>
+        <div id="signupCodeForm" style="display: none;">
+            <p style="font-size:14px;line-height:1.45;margin:0 0 10px;">We sent a one-time 6-digit verification code to <b id="signupCodeEmail"></b>.</p>
+            <input type="text" id="signupCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code">
+            <button onclick="verifySignupCode()">Verify Email & Create Account</button>
+            <button class="secondary-btn" onclick="resendSignupCode()">Send New Code</button>
+            <button class="secondary-btn" onclick="cancelSignupVerification()">Back</button>
+            <div id="signupCodeError" style="display:none;color:#b71c1c;font-size:13px;margin-top:10px;line-height:1.4;"></div>
+        </div>
     </div>
 </div>
 
@@ -944,8 +952,9 @@
 
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, sendPasswordResetEmail, reload } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification, sendPasswordResetEmail, reload } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
     import { getFirestore, collection, addDoc, query, where, onSnapshot, orderBy, getDocs, setDoc, doc, getDoc, updateDoc, serverTimestamp, deleteDoc, arrayUnion, arrayRemove, increment, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyCERMHkivZF4is_SMGFOgtl8XrTyLTp6So",
@@ -960,6 +969,9 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const functions = getFunctions(app);
+    const requestSignupCodeFn = httpsCallable(functions, 'requestSignupCode');
+    const verifySignupCodeFn = httpsCallable(functions, 'verifySignupCode');
     const db = getFirestore(app);
 
     let selectedImage = null;
@@ -1116,15 +1128,15 @@
             .join('');
     }
 
+    let pendingSignup = null;
+
     window.signup = async () => {
         const name = document.getElementById('signupName').value.trim();
-        const email = document.getElementById('signupEmail').value.trim();
+        const email = document.getElementById('signupEmail').value.trim().toLowerCase();
         const password = document.getElementById('signupPassword').value;
         if (!name || !email || !password) { alert('Please fill all fields'); return; }
         if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
 
-        // Block repeat registrations from the same browser/device even when
-        // the person changes IP addresses with a VPN.
         const localRegistrationClaim = localStorage.getItem('htSocialRegistrationClaim');
         if (localRegistrationClaim === 'claimed') {
             alert('Only one account can be created from this browser/device.');
@@ -1137,10 +1149,9 @@
             const deviceLock = await getDoc(doc(db, 'registrationLocks', 'device_' + deviceHash));
             if (deviceLock.exists()) {
                 localStorage.setItem('htSocialRegistrationClaim', 'claimed');
-                alert('Only one account can be created from this browser/device. A VPN cannot bypass this limit.');
+                alert('Only one account can be created from this browser/device.');
                 return;
             }
-
             ipHash = await getRegistrationIPHash();
             const ipLock = await getDoc(doc(db, 'registrationLocks', 'ip_' + ipHash));
             if (ipLock.exists()) {
@@ -1152,43 +1163,68 @@
             return;
         }
 
-        const phoneId = '+1' + Math.floor(Math.random() * 9000000000 + 1000000000);
-        let uc = null;
         try {
-            uc = await createUserWithEmailAndPassword(auth, email, password);
-
-            await setDoc(doc(db, 'users', uc.user.uid), {
-                displayName: name, phoneId, email,
-                createdAt: serverTimestamp(),
-                postsCount: 0, followersCount: 0, followingCount: 0,
-                banned: false, registrationIPHash: ipHash,
-                registrationDeviceHash: deviceHash,
-                emailVerified: false
-            });
-
-            await sendEmailVerification(uc.user);
-
-            // Keep this lock after account deletion so the IP cannot register again.
-            await setDoc(doc(db, 'registrationLocks', 'ip_' + ipHash), {
-                uid: uc.user.uid,
-                type: 'ip',
-                createdAt: serverTimestamp()
-            });
-            await setDoc(doc(db, 'registrationLocks', 'device_' + deviceHash), {
-                uid: uc.user.uid,
-                type: 'device',
-                createdAt: serverTimestamp()
-            });
-            localStorage.setItem('htSocialRegistrationClaim', 'claimed');
-
-            await signOut(auth);
-            alert('Account created!\n\nA verification email was sent to ' + email + '. Verify your email before signing in.\n\nPhone ID: ' + phoneId);
+            await requestSignupCodeFn({ name, email, password, ipHash, deviceHash });
+            pendingSignup = { name, email, password, ipHash, deviceHash };
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('signupCodeForm').style.display = 'block';
+            document.getElementById('signupCodeEmail').textContent = email;
+            document.getElementById('signupCode').value = '';
+            document.getElementById('signupCodeError').style.display = 'none';
+            alert('A one-time 6-digit verification code was sent to ' + email + '.');
+            setTimeout(() => document.getElementById('signupCode')?.focus(), 100);
         } catch (e) {
-            if (uc && auth.currentUser && auth.currentUser.uid === uc.user.uid) {
-                try { await uc.user.delete(); } catch (_) {}
-            }
-            alert(e.code === 'auth/email-already-in-use' ? 'Email already registered.' : 'Signup failed: ' + e.message);
+            const code = e.code || '';
+            const msg = code.includes('already-exists') || code.includes('email-already-in-use')
+                ? 'Email already registered.'
+                : (e.message || 'Could not send the verification code.');
+            alert(msg);
         }
+    };
+
+    window.resendSignupCode = async () => {
+        if (!pendingSignup) return;
+        try {
+            await requestSignupCodeFn(pendingSignup);
+            document.getElementById('signupCode').value = '';
+            document.getElementById('signupCodeError').style.display = 'none';
+            alert('A new verification code was sent. The previous code is no longer valid.');
+        } catch (e) {
+            alert(e.message || 'Could not send a new code.');
+        }
+    };
+
+    window.verifySignupCode = async () => {
+        if (!pendingSignup) return;
+        const codeInput = document.getElementById('signupCode');
+        const errorEl = document.getElementById('signupCodeError');
+        const code = codeInput.value.trim();
+        errorEl.style.display = 'none';
+        if (!/^\d{6}$/.test(code)) {
+            errorEl.textContent = 'Enter the 6-digit code from your email.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            await verifySignupCodeFn({ email: pendingSignup.email, code });
+            const email = pendingSignup.email;
+            const password = pendingSignup.password;
+            localStorage.setItem('htSocialRegistrationClaim', 'claimed');
+            pendingSignup = null;
+            document.getElementById('signupCodeForm').style.display = 'none';
+            await signInWithEmailAndPassword(auth, email, password);
+            alert('Email verified! Your HT Social account has been created.');
+        } catch (e) {
+            errorEl.textContent = e.message || 'The code is invalid or expired.';
+            errorEl.style.display = 'block';
+        }
+    };
+
+    window.cancelSignupVerification = () => {
+        pendingSignup = null;
+        document.getElementById('signupCodeForm').style.display = 'none';
+        document.getElementById('signupForm').style.display = 'block';
     };
 
     window.logout = () => {
