@@ -1093,9 +1093,9 @@
         }
     };
 
-    // ── Registration/IP + device limit ──────────────────────────────────────
-    // IP-only limits are easy to bypass with a VPN. We also keep a stable
-    // browser/device registration fingerprint and a local one-account marker.
+    // ── Registration/device limit ───────────────────────────────────────────
+    // Email verification handles account ownership; no IP-based registration limit is enforced.
+    // A browser/device registration marker is still kept to limit repeat registrations on the same device.
     async function getRegistrationDeviceHash() {
         const parts = [
             navigator.userAgent || '',
@@ -1150,12 +1150,6 @@
             if (deviceLock.exists()) {
                 localStorage.setItem('htSocialRegistrationClaim', 'claimed');
                 alert('Only one account can be created from this browser/device.');
-                return;
-            }
-            ipHash = await getRegistrationIPHash();
-            const ipLock = await getDoc(doc(db, 'registrationLocks', 'ip_' + ipHash));
-            if (ipLock.exists()) {
-                alert('Only one account can be created from this IP address.');
                 return;
             }
         } catch (e) {
